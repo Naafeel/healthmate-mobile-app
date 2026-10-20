@@ -1,56 +1,72 @@
-# Welcome to your Expo app 👋
+# HealthMate
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Personal Health & Wellness Tracker for Kingston University / ESOFT Mobile Application Development coursework.
 
-## Get started
+## Status
 
-1. Install dependencies
+Initialization phase only. Implemented: Expo Router navigation shell, responsive HealthMate welcome screen with a local health icon, shared design tokens, strict TypeScript, and Expo-compatible ESLint. There is no dashboard or data collection yet.
 
-   ```bash
-   npm install
-   ```
+Planned: health records, validated forms, CRUD, search/filtering, Zustand state, local SQLite via expo-sqlite (subject to lecturer confirmation), tests, and technical documentation. These features are not implemented. Flutter is prohibited.
 
-2. Start the app
+## Stack
 
-   ```bash
-   npx expo start
-   ```
+React Native with Expo SDK 58, React 19, TypeScript strict mode, Expo Router, and npm. Android is the target. The dependency lockfile pins exact installed versions. Architecture: feature-based, MVVM-inspired, with Repository Pattern. No paid service, backend, hosting, or account is required for core functionality.
 
-In the output, you'll find options to open the app in a
+## Prerequisites
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- Node.js 24 LTS and npm (use the major in .nvmrc).
+- Git.
+- Android Studio with an Android SDK, platform-tools, and a configured emulator; or an Android device with a compatible Expo Go client.
+- SDK 58 is in an Expo Go transition period as of 20 October 2026. Use the matching Android client from https://expo.dev/go rather than assuming the Play Store client supports SDK 58.
+- Java is not needed to run JavaScript in Expo Go. Native compilation, if introduced later, requires the JDK supported by that SDK's Android build toolchain; the locally installed JDK 25 has not been validated for native builds.
 
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Official setup: https://docs.expo.dev/get-started/create-a-project/ and https://docs.expo.dev/workflow/android-studio-emulator/.
 
-## Get a fresh project
+## Install and run (PowerShell)
 
-When you're ready, run:
+Run inside the existing repository; do not create a nested app directory:
 
-```bash
-npm run reset-project
+```powershell
+Set-Location 'C:\Users\Naafeel\Downloads\Mobile App Development\Health Mate App\healthmate-mobile-app'
+npm ci
+$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
+$env:Path += ";$env:ANDROID_HOME\platform-tools;$env:ANDROID_HOME\emulator"
+npm run android
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+Start the Pixel_10 emulator from Android Studio Device Manager first, or allow Expo to select/start an emulator. If Expo Go installation is offered, use the SDK-compatible client. For a physical device, use npm start and scan the QR code with compatible Expo Go; the computer and phone must be reachable on the same network. No EAS account or paid build service is required.
 
-### Other setup steps
+Only the welcome screen should appear. There are no record forms or functional dashboard controls.
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## Quality checks
 
-## Learn more
+```powershell
+npm run typecheck
+npm run lint
+npx expo-doctor
+npx expo install --check
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+See docs/verification.md for the initialization checks and their limits. A successful bundle is not proof that Android rendered the application. Automated feature tests will be added with actual behaviors in later phases.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Structure
 
-## Join the community
+```text
+src/
+  app/                  # Router layout and initial route
+  components/           # Reusable HealthIcon
+  features/welcome/     # Welcome screen
+  theme/                # Design tokens
+docs/                   # Architecture and verification notes
+app.json                # HealthMate display name and Expo metadata
+eslint.config.js
+package.json
+package-lock.json
+tsconfig.json
+```
 
-Join our community of developers creating universal apps.
+See docs/architecture.md for the planned domain, repository, database, hooks, store, and utility responsibilities. Those folders will be added when used.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Version control
+
+This application lives directly in the existing healthmate-mobile-app Git repository. Generated native folders, dependencies, Metro output, local credentials, and Expo cache are ignored. Commit genuine completed changes progressively; never commit secrets or patient data.
