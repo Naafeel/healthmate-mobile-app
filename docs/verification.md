@@ -89,3 +89,7 @@ An early launch retry overlapped dependency maintenance and briefly could not re
 Expo Go 58.0.5 was ultimately installed successfully on the cold-booted Pixel_10 emulator. Opening HealthMate reached an Expo Go connection/error screen and then a loading screen; the welcome view was not verified. Retrying the host gateway and an adb reverse connection did not establish a rendered welcome screen during this session. Metro separately served the Android bundle with HTTP 200 (6,021,452 bytes). This is a launch attempt, not a passing Android UI test. Physical-device and native-build tests remain unperformed.
 
 The development server was stopped after verification. Retry npm run android with the emulator fully booted and Metro reachable. If localhost connections fail, use the normal LAN launch and check Windows firewall/network access. A further combined diagnostic/restart command was rejected by automatic approval review as blocked by policy; no policy bypass was attempted.
+
+## Follow-up — 21 October 2026
+
+The welcome launch limitation above is resolved. The user reported a successful launch after Expo Go 58.0.5 installation, and during Prompt 02 the original welcome screen was independently observed running in the Pixel 10 emulator. The updated welcome/Get Started build also rendered successfully over a Metro LAN connection. See ui-verification.md for the current phase results; earlier failure notes are retained as history.

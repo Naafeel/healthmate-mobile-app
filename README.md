@@ -4,7 +4,7 @@ Personal Health & Wellness Tracker for Kingston University / ESOFT Mobile Applic
 
 ## Status
 
-Initialization phase only. Implemented: Expo Router navigation shell, responsive HealthMate welcome screen with a local health icon, shared design tokens, strict TypeScript, and Expo-compatible ESLint. There is no dashboard or data collection yet.
+UI/navigation foundation completed. Implemented: preserved welcome screen with Get Started, four bottom tabs (Dashboard, Records, Insights, Settings), an Add Record placeholder with back navigation, reusable accessible UI components, centralized design tokens, strict TypeScript, and Expo-compatible ESLint. Dashboard and records are honest screen shells; no data is collected.
 
 Planned: health records, validated forms, CRUD, search/filtering, Zustand state, local SQLite via expo-sqlite (subject to lecturer confirmation), tests, and technical documentation. These features are not implemented. Flutter is prohibited.
 
@@ -36,7 +36,7 @@ npm run android
 
 Start the Pixel_10 emulator from Android Studio Device Manager first, or allow Expo to select/start an emulator. If Expo Go installation is offered, use the SDK-compatible client. For a physical device, use npm start and scan the QR code with compatible Expo Go; the computer and phone must be reachable on the same network. No EAS account or paid build service is required.
 
-Only the welcome screen should appear. There are no record forms or functional dashboard controls.
+The welcome screen opens first. Tap Get Started to enter Dashboard; use the bottom tabs to visit Records, Insights, and Settings. Add Record opens a placeholder, not a functional form. Android Back retraces visited tabs and returns to welcome. If localhost fails in Expo Go, use the default LAN connection; verification used npx expo start --android --lan --port 8082.
 
 ## Quality checks
 
@@ -47,15 +47,15 @@ npx expo-doctor
 npx expo install --check
 ```
 
-See docs/verification.md for the initialization checks and their limits. A successful bundle is not proof that Android rendered the application. Automated feature tests will be added with actual behaviors in later phases.
+See docs/verification.md for initialization history and docs/ui-verification.md for the UI/navigation checks. A successful bundle is not proof that Android rendered the application. Automated feature tests will be added with actual behaviors in later phases.
 
 ## Structure
 
 ```text
 src/
-  app/                  # Router layout and initial route
-  components/           # Reusable HealthIcon
-  features/welcome/     # Welcome screen
+  app/                  # Root stack, (tabs), add-record, welcome
+  components/           # Reusable UI primitives and health icon
+  features/             # Welcome, dashboard, records, insights, settings
   theme/                # Design tokens
 docs/                   # Architecture and verification notes
 app.json                # HealthMate display name and Expo metadata
@@ -70,3 +70,7 @@ See docs/architecture.md for the planned domain, repository, database, hooks, st
 ## Version control
 
 This application lives directly in the existing healthmate-mobile-app Git repository. Generated native folders, dependencies, Metro output, local credentials, and Expo cache are ignored. Commit genuine completed changes progressively; never commit secrets or patient data.
+
+## UI and navigation evidence
+
+See [UI design](docs/ui-design.md), [architecture](docs/architecture.md), and [verification](docs/ui-verification.md). Genuine Pixel 10 screenshots are in docs/evidence/.
