@@ -86,5 +86,6 @@ An early launch retry overlapped dependency maintenance and briefly could not re
 
 ## Android launch status
 
-Launch was attempted on Pixel_10. Expo detected Expo Go 57.0.3 and started replacing it with recommended 58.0.5, but the client download did not complete within the verification session. Android rendering is therefore NOT verified. Retry npm run android with the emulator fully booted and network access to Expo's download servers. No screenshot or visual pass is claimed.
+Expo Go 58.0.5 was ultimately installed successfully on the cold-booted Pixel_10 emulator. Opening HealthMate reached an Expo Go connection/error screen and then a loading screen; the welcome view was not verified. Retrying the host gateway and an adb reverse connection did not establish a rendered welcome screen during this session. Metro separately served the Android bundle with HTTP 200 (6,021,452 bytes). This is a launch attempt, not a passing Android UI test. Physical-device and native-build tests remain unperformed.
 
+The development server was stopped after verification. Retry npm run android with the emulator fully booted and Metro reachable. If localhost connections fail, use the normal LAN launch and check Windows firewall/network access. A further combined diagnostic/restart command was rejected by automatic approval review as blocked by policy; no policy bypass was attempted.
