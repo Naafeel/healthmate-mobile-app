@@ -1,11 +1,15 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from "react-native";
 
-import { theme } from '@/theme/tokens';
+import { theme } from "@/theme/tokens";
 
 /** A local, font-independent health cross. Decorative beside the screen title. */
 export function HealthIcon() {
   return (
-    <View style={styles.container} accessible={false} importantForAccessibility="no-hide-descendants">
+    <View
+      style={styles.container}
+      accessible={false}
+      importantForAccessibility="no-hide-descendants"
+    >
       <View style={styles.horizontal} />
       <View style={styles.vertical} />
     </View>
@@ -14,10 +18,25 @@ export function HealthIcon() {
 
 const styles = StyleSheet.create({
   container: {
-    width: 88, height: 88, borderRadius: theme.radius.icon,
+    width: 88,
+    height: 88,
+    borderRadius: theme.radius.icon,
     backgroundColor: theme.colors.primarySoft,
-    alignItems: 'center', justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
-  horizontal: { position: 'absolute', width: 40, height: 12, borderRadius: 4, backgroundColor: theme.colors.primary },
-  vertical: { position: 'absolute', width: 12, height: 40, borderRadius: 4, backgroundColor: theme.colors.primary },
+  horizontal: {
+    position: "absolute",
+    width: 40,
+    height: 12,
+    borderRadius: 4,
+    backgroundColor: theme.colors.primary,
+  },
+  vertical: {
+    position: "absolute",
+    width: 12,
+    height: 40,
+    borderRadius: 4,
+    backgroundColor: theme.colors.primary,
+  },
 });
