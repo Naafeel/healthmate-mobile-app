@@ -51,6 +51,7 @@ export function createHealthRecordStore(repository: HealthRecordRepository) {
           "A record change is already being saved. Please wait.",
         );
       revision++;
+      let changed = false;
       set({ mutating: true, error: null, success: null });
       try {
         const record =
@@ -67,18 +68,20 @@ export function createHealthRecordStore(repository: HealthRecordRepository) {
               ? "Record saved on this device."
               : "Record updated on this device.",
         }));
+        changed = true;
         return record;
       } catch (error) {
         set({ error: recordErrorMessage(error) });
         throw error;
       } finally {
         set({ mutating: false });
-        void get().refresh();
+        if (changed) void get().refresh();
       }
     },
     remove: async (id) => {
       if (get().mutating) return false;
       revision++;
+      let changed = false;
       set({ mutating: true, error: null, success: null });
       try {
         await repository.deleteRecord(id);
@@ -86,13 +89,14 @@ export function createHealthRecordStore(repository: HealthRecordRepository) {
           records: state.records.filter((r) => r.id !== id),
           success: "Record deleted from this device.",
         }));
+        changed = true;
         return true;
       } catch (error) {
         set({ error: recordErrorMessage(error) });
         return false;
       } finally {
         set({ mutating: false });
-        void get().refresh();
+        if (changed) void get().refresh();
       }
     },
   }));

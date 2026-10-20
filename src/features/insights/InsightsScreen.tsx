@@ -10,7 +10,7 @@ export function InsightsScreen() {
       <EmptyState
         icon="bar-chart-outline"
         title="Patterns take a little time"
-        description="Charts and trends will become available in a future update after you can record health data. There is nothing to analyse yet."
+        description="Charts and trends are planned for a future update and will use your saved daily records. Analytics are not available yet."
       />
       <AppText variant="caption" muted>
         Future insights will use your locally stored records.

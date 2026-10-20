@@ -24,7 +24,7 @@ export function DashboardScreen() {
           label="Add Record"
           icon="add"
           onPress={() => router.push("/add-record")}
-          accessibilityHint="Opens the upcoming health entry screen"
+          accessibilityHint="Opens the daily health entry form"
         />
       </AppCard>
       <AppText variant="heading" accessibilityRole="header">
@@ -33,7 +33,7 @@ export function DashboardScreen() {
       <EmptyState
         icon="heart-outline"
         title="Make room for your wellbeing"
-        description="Your daily summaries will live here once health tracking is available. No records or statistics are available yet."
+        description="Daily summary calculations are planned for the next phase. View and manage your saved daily entries in Records."
       />
       <AppCard>
         <AppText variant="eyebrow" muted>

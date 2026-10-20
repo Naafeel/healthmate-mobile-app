@@ -35,8 +35,8 @@ export function SettingsScreen() {
           coursework
         </AppText>
         <AppText variant="caption" muted>
-          Version 1.0.0 · UI foundation{"\n"}Local health tracking is planned.
-          No health data is collected in this version.
+          Version 1.0.0 · Local record management{"\n"}Health records are saved
+          on this device. No cloud account or synchronization is used.
         </AppText>
       </AppCard>
     </AppScreen>
