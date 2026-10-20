@@ -7,9 +7,9 @@
 - src/components: AppScreen, AppHeader, AppText, AppCard, AppButton, AppIcon, EmptyState, and the original HealthIcon.
 - src/theme: colors, typography, spacing, radius, border, elevation, icon and component-size tokens.
 
-## Planned responsibilities (not implemented)
+## Layer responsibilities
 
-Create these folders when the first real consumer exists; avoid empty scaffolding.
+Domain models/contracts/validation, SQLite database/repository, and shared Zustand state are now implemented. Shared hooks and utilities remain deferred until needed.
 
 | Location | Responsibility |
 | --- | --- |
@@ -17,18 +17,18 @@ Create these folders when the first real consumer exists; avoid empty scaffoldin
 | src/hooks/ | Hooks shared by multiple features |
 | src/domain/models/ | Framework-independent domain types |
 | src/domain/repositories/ | Repository contracts expressed in domain types |
-| src/data/database/ | SQLite connection, configuration, migrations, and schema after lecturer approval |
+| src/data/database/ | Implemented SQLite connection, configuration, migration v1 and schema; lecturer confirmation pending |
 | src/data/repositories/ | Repository implementations using SQLite |
 | src/store/ | Zustand stores for cross-feature application state |
 | src/utils/ | Small shared pure helpers |
 
 The intended dependency flow is View -> view-model hook -> repository interface -> repository implementation -> SQLite. Domain types must not import React or SQLite. Route files only compose navigation and feature screens. A feature can own local state; Zustand is reserved for shared state. No dependency injection framework or generic base repository is needed for initialization.
 
-Core records will be stored locally and work offline. Development currently loads JavaScript from Metro; that does not establish a production offline launch test. SQLite, Zustand, models, persistence, CRUD, search, validation, analytics, and automated behavior tests are future work. No cloud services, authentication, Flutter, paid dependencies, or native project modifications are included.
+Core records are stored locally through Expo SQLite and work without a backend. Development loads JavaScript from Metro; this does not establish a production offline launch test. Models, repository contracts, validation, migrations, CRUD, exact-date filtering, Zustand state, and automated tests are implemented. Dashboard calculations and analytics remain future work. No cloud services, authentication, Flutter, paid dependencies, or native project modifications are included.
 
 ## Implemented navigation
 
-The root Stack contains welcome (index), the four-tab group, and add-record. Routes re-export feature screens. Both navigator headers are hidden; AppHeader supplies the sole visible title. Shared components do not import feature modules. Get Started pushes Dashboard, preserving welcome below it. Tabs use history back behavior. Add Record pushes onto the root stack so Back returns to the invoking tab; its header uses router.back with a Dashboard fallback for direct entry. No onboarding persistence is used. SDK 58 uses unstable_settings.anchor for stack/tab anchors.
+The root Stack contains welcome (index), the four-tab group, add-record, and edit-record/[id]. Routes re-export feature screens. Both navigator headers are hidden; AppHeader supplies the sole visible title. Shared components do not import feature modules. Get Started pushes Dashboard, preserving welcome below it. Tabs use history back behavior. Add Record pushes onto the root stack so Back returns to the invoking tab; its header uses router.back with a Dashboard fallback for direct entry. No onboarding persistence is used. SDK 58 uses unstable_settings.anchor for stack/tab anchors.
 
 ~~~text
 src/app/
@@ -41,6 +41,7 @@ src/app/
     insights.tsx           /insights
     settings.tsx           /settings
   add-record.tsx           /add-record
+  edit-record/[id].tsx      /edit-record/:id
 ~~~
 
 ~~~mermaid
@@ -49,7 +50,7 @@ flowchart TD
   D <--> R[Records]
   R <--> I[Insights]
   I <--> S[Settings]
-  D -->|Add Record| A[Add Record shell]
+  D -->|Add Record| A[Add/Edit daily record]
   R -->|Add Record| A
   A -->|Header or Android Back| T[Invoking tab]
   T -->|Tab selection| D
@@ -57,3 +58,23 @@ flowchart TD
 ~~~
 
 All four tabs are directly selectable from every tab. The diagram abbreviates these links; Android Back traverses visited-tab history before popping the root stack.
+
+## Implemented record data flow
+
+~~~mermaid
+flowchart LR
+  V[RecordFormScreen / RecordsScreen] --> VM[useRecordForm / Zustand store]
+  VM --> C[HealthRecordRepository contract]
+  C --> R[SQLiteHealthRecordRepository]
+  R --> DB[healthmate.db / health_records]
+  V --> VAL[Domain validation]
+  R --> VAL
+~~~
+
+The form view-model owns draft strings, field errors, load/retry state, and duplicate-date recovery. Zustand owns the canonical saved record list, loading/mutation flags, feedback, refresh, save and delete operations. It does not persist a second copy in AsyncStorage; SQLite is the source of truth. Mutations synchronize saved rows, sort newest first, and refresh after success. A revision guard prevents older loads from replacing newer mutations. Failed deletions keep their error visible for retry.
+
+The composition module src/store/healthRecords.ts creates one repository behind the interface and injects it into createHealthRecordStore. Form lookup uses the same repository. No SQL appears in screens or hooks. Domain files import neither React nor SQLite. The database module owns a retryable singleton connection promise and completes initialization before returning it.
+
+Records uses FlatList rather than nesting a virtualized list in AppScreen's ScrollView. Focus, foreground and pull-to-refresh reload SQLite. Exact-date filtering selects from that shared loaded list; the repository also supports parameterized date and date-range queries for tests and later consumers. Add/Edit share one form, with a separate typed edit route and ID-preserving updates. Native Alert supplies Cancel/Delete; no destructive operation runs on Cancel. Keyboard-aware scrolling and persistent taps keep actions reachable.
+
+See database-design.md and crud-verification.md for schema, bounds, testing, fixtures and actual Android evidence.

@@ -42,3 +42,7 @@ Run npm ci, then npm run android from the repository root with the Android SDK o
 
 Final checks: Android Back from Add Record restored Dashboard; Android Back from Dashboard restored welcome. A touch swipe made the lower Dashboard card fully visible above the bottom navigation. No initial-route deprecation warning appeared after reloading the final anchor-based build.
 
+
+## Phase 03 follow-up
+
+Record-management implementation and current Android evidence are documented separately in crud-verification.md. The UI-only limitations above describe Prompt 02, not the completed record-management phase.

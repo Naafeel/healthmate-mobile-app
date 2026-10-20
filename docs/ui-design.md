@@ -80,3 +80,7 @@ Captured from the Pixel 10 emulator, not generated mockups:
 ![Insights](evidence/insights.png)
 ![Settings](evidence/settings.png)
 ![Add Record](evidence/add-record.png)
+
+## Phase 03 follow-up
+
+The wireframes and screenshots above document the original UI foundation. Records and Add Record are now functional; see database-design.md and crud-verification.md for the current implementation and genuine CRUD screenshots. Dashboard, Insights and Settings remain shells with updated copy.
