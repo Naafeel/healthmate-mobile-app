@@ -1,13 +1,25 @@
+import type { TextStyle } from 'react-native';
+
 export const theme = {
   colors: {
-    background: '#F4F8F7',
-    surface: '#FFFFFF',
-    primary: '#126B57',
-    primarySoft: '#E2F2EB',
-    text: '#183B33',
-    muted: '#4B655E',
-    border: '#D5E5DF',
+    background: '#F4F8F7', surface: '#FFFFFF', primary: '#126B57',
+    primaryPressed: '#0C5142', primarySoft: '#E2F2EB', text: '#183B33',
+    muted: '#4B655E', border: '#D5E5DF', onPrimary: '#FFFFFF',
+    disabled: '#E3E9E6', disabledText: '#53665E',
   },
-  spacing: { small: 8, medium: 16, large: 24, extraLarge: 40 },
-  radius: { card: 28, icon: 24 },
+  typography: {
+    hero: { fontSize: 38, lineHeight: 46, fontWeight: '700' },
+    title: { fontSize: 30, lineHeight: 38, fontWeight: '700' },
+    heading: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+    body: { fontSize: 16, lineHeight: 25 },
+    label: { fontSize: 15, lineHeight: 22, fontWeight: '600' },
+    caption: { fontSize: 13, lineHeight: 20 },
+    eyebrow: { fontSize: 12, lineHeight: 18, fontWeight: '700', letterSpacing: 1.6 },
+  } satisfies Record<string, TextStyle>,
+  spacing: { tiny: 4, small: 8, compact: 12, medium: 16, large: 24, roomy: 32, extraLarge: 40 },
+  radius: { small: 12, button: 16, card: 24, icon: 24, pill: 999 },
+  border: { width: 1 },
+  elevation: { card: 0 },
+  icon: { small: 20, medium: 24, large: 32, hero: 44 },
+  size: { touch: 48, button: 52, tabBar: 68, content: 640, welcome: 480, iconTile: 64 },
 } as const;
