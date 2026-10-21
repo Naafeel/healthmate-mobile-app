@@ -19,6 +19,7 @@ export interface HealthRecordState {
   refresh(): Promise<void>;
   save(input: CreateHealthRecord, id?: number): Promise<HealthRecord>;
   remove(id: number): Promise<boolean>;
+  replaceFromStorage(records:HealthRecord[]):void;
   clearFeedback(): void;
   addWater(date:string,amount:number):Promise<boolean>;
 }
@@ -27,6 +28,7 @@ const sorted = (records: HealthRecord[]) =>
 export function createHealthRecordStore(repository: HealthRecordRepository & Partial<WaterIncrementRepository>) {
   let revision = 0;
   return createStore<HealthRecordState>()((set, get) => ({
+    replaceFromStorage:(records)=>{revision++;set({records:sorted(records),hasLoaded:true,error:null,success:null});},
     records: [],
     loading: false,
     hasLoaded: false,
@@ -84,8 +86,8 @@ export function createHealthRecordStore(repository: HealthRecordRepository & Par
     },
     addWater: async (date,amount)=>{
       if(get().mutating)return false;
-      revision++;set({mutating:true,error:null,success:null});
-      try{if(!repository.incrementWater)throw new Error('Water update unavailable');const record=await repository.incrementWater(date,amount);set(state=>({records:sorted([...state.records.filter(r=>r.id!==record.id),record]),success:amount+' ml water added.'}));return true;}catch(e){set({error:recordErrorMessage(e)});return false;}finally{set({mutating:false});void get().refresh();}
+      revision++;let changed=false;set({mutating:true,error:null,success:null});
+      try{if(!repository.incrementWater)throw new Error('Water update unavailable');const record=await repository.incrementWater(date,amount);set(state=>({records:sorted([...state.records.filter(r=>r.id!==record.id),record]),success:amount+' ml water added.'}));changed=true;return true;}catch(e){set({error:recordErrorMessage(e)});return false;}finally{set({mutating:false});if(changed)void get().refresh();}
     },
     remove: async (id) => {
       if (get().mutating) return false;

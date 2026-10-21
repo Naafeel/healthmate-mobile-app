@@ -1,3 +1,4 @@
+import { useDataMaintenance } from "@/store/dataMaintenance";
 import { Pressable, StyleSheet, View, type PressableProps } from "react-native";
 import { AppText } from "./AppText";
 import { AppIcon, type IconName } from "./AppIcon";
@@ -12,9 +13,11 @@ export function AppButton({
   label,
   icon,
   variant = "primary",
-  disabled,
+  disabled: disabledProp,
   ...props
 }: Props) {
+  const maintenance=useDataMaintenance(s=>s.busy);
+  const disabled=disabledProp||maintenance;
   const theme = useTheme();
   const styles = createStyles(theme);
   const primary = variant === "primary";

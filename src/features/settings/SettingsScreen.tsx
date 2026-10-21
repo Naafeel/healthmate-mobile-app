@@ -1,3 +1,5 @@
+import { BackupSettings } from "./BackupSettings";
+import { useDataMaintenance } from "@/store/dataMaintenance";
 import { ReminderSettings } from "./ReminderSettings";
 import { AppearanceSettings } from "./AppearanceSettings";
 import { AppScreen } from "@/components/AppScreen";
@@ -7,14 +9,16 @@ import { AppCard } from "@/components/AppCard";
 import { GoalSettings } from "./GoalSettings";
 import { ExportRecordsCard } from "@/features/export/ExportRecordsCard";
 export function SettingsScreen() {
+  const revision=useDataMaintenance(s=>s.revision);
   return (
     <AppScreen keyboard>
       <AppHeader eyebrow="MAKE IT YOURS" title="Settings" />
       <AppText muted>A thoughtful space for your health preferences.</AppText>
       <AppearanceSettings />
       <ReminderSettings />
-      <GoalSettings />
+      <GoalSettings key={revision} />
       <ExportRecordsCard />
+      <BackupSettings />
 
       <AppCard>
         <AppText variant="eyebrow" muted>

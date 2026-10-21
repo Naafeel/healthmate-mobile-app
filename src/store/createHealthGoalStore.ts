@@ -11,11 +11,13 @@ export interface HealthGoalState {
   success: string | null;
   refresh(): Promise<void>;
   save(input: GoalValues): Promise<boolean>;
+  replaceFromStorage(goals:HealthGoals):void;
   clearFeedback(): void;
 }
 export function createHealthGoalStore(repository: HealthGoalRepository) {
   let revision = 0;
   return createStore<HealthGoalState>()((set, get) => ({
+    replaceFromStorage:(goals)=>{revision++;set({goals,hasLoaded:true,error:null,success:null});},
     goals: { ...emptyGoals },
     hasLoaded: false,
     loading: false,

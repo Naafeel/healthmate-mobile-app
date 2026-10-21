@@ -1,3 +1,4 @@
+import { cleanExpiredBackups } from "@/data/backup/nativeBackup";
 import { syncReminder } from "@/data/reminders/nativeReminder";
 import { AppState, Appearance } from "react-native";
 import { usePreferences } from "@/store/preferences";
@@ -24,6 +25,7 @@ export default function RootLayout() {
     void healthGoalStore.getState().refresh();
     try {
       cleanExpiredExports();
+      cleanExpiredBackups();
     } catch {
       /* Cache cleanup must not block record access. */
     }
