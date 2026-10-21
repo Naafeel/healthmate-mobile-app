@@ -118,10 +118,19 @@ export function DashboardScreen() {
                 {w.id === "streak" && (
                   <AppCard>
                     <AppText variant="heading">Logging Streak</AppText>
-                    <AppText>
-                      Current: {streaks?.current ?? 0} days / Longest:{" "}
-                      {streaks?.longest ?? 0} days
-                    </AppText>
+                    {streaks ? (
+                      <AppText>
+                        Current: {streaks.current}{" "}
+                        {streaks.current === 1 ? "day" : "days"} / Longest:{" "}
+                        {streaks.longest}{" "}
+                        {streaks.longest === 1 ? "day" : "days"}
+                      </AppText>
+                    ) : (
+                      <AppText muted>
+                        Logging streaks are unavailable until valid saved
+                        records are loaded.
+                      </AppText>
+                    )}
                     <AppText muted>
                       Consecutive saved dates, including zeros. This measures
                       logging, not health or goal achievement.
