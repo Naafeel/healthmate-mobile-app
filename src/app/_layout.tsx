@@ -1,3 +1,4 @@
+import { usePersonalization } from "@/store/personalization";
 import { cleanExpiredBackups } from "@/data/backup/nativeBackup";
 import { syncReminder } from "@/data/reminders/nativeReminder";
 import { AppState, Appearance } from "react-native";
@@ -33,6 +34,7 @@ export default function RootLayout() {
   }, [mode]);
   useEffect(() => {
     void usePreferences.getState().refresh();
+    void usePersonalization.getState().refresh();
     void healthRecordStore.getState().refresh();
     void healthGoalStore.getState().refresh();
     try {

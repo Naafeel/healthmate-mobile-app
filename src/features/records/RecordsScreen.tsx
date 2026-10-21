@@ -184,6 +184,10 @@ export function RecordsScreen() {
               Calories burned: {item.calories.toLocaleString()} kcal
             </AppText>
             <AppText>Water intake: {item.water.toLocaleString()} ml</AppText>
+            {!!item.note && <AppText>{item.note}</AppText>}
+            {!!item.tags?.length && (
+              <AppText muted>{item.tags.join(" � ")}</AppText>
+            )}
             <AppButton
               label="Edit Record"
               accessibilityLabel={"Edit record for " + item.date}

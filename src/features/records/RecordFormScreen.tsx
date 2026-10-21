@@ -1,4 +1,5 @@
-import { ActivityIndicator, Keyboard } from "react-native";
+import { activityTags } from "@/domain/records/annotations";
+import { ActivityIndicator, Keyboard, TextInput } from "react-native";
 import { router } from "expo-router";
 import { AppScreen } from "@/components/AppScreen";
 import { AppHeader } from "@/components/AppHeader";
@@ -82,6 +83,42 @@ export function RecordFormScreen({
             Enter whole numbers, including 0. Maximums: 200,000 steps, 20,000
             kcal and 20,000 ml.
           </AppText>
+          <AppText variant="label">
+            Daily note (optional, up to 500 characters)
+          </AppText>
+          <TextInput
+            accessibilityLabel="Daily note"
+            multiline
+            maxLength={500}
+            value={form.note}
+            onChangeText={form.setNote}
+            editable={!form.mutating}
+            style={{
+              color: theme.colors.text,
+              backgroundColor: theme.colors.surface,
+              borderColor: theme.colors.border,
+              borderWidth: 1,
+              borderRadius: 12,
+              padding: 16,
+              minHeight: 100,
+              textAlignVertical: "top",
+            }}
+          />
+          <AppText variant="label">Activity tags (optional)</AppText>
+          {activityTags.map((tag) => (
+            <AppButton
+              key={tag}
+              label={`${form.tags.includes(tag) ? "Selected: " : ""}${tag}`}
+              accessibilityLabel={`${tag}, ${form.tags.includes(tag) ? "selected" : "not selected"}`}
+              variant="secondary"
+              disabled={form.mutating}
+              onPress={() =>
+                form.setTags((t) =>
+                  t.includes(tag) ? t.filter((v) => v !== tag) : [...t, tag],
+                )
+              }
+            />
+          ))}
           {form.error && (
             <AppText
               accessibilityRole="alert"

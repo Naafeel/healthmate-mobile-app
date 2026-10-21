@@ -1,3 +1,5 @@
+import { usePersonalization } from "../../store/personalization";
+import { SQLitePersonalizationRepository } from "../repositories/SQLitePersonalizationRepository";
 import { Directory, File, Paths } from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
@@ -10,7 +12,7 @@ import { localDate } from "../../domain/records/validation";
 import { getDatabase } from "../database/database";
 import { databaseAccess } from "../database/access";
 import { SQLiteBackupRepository } from "./SQLiteBackupRepository";
-import { SQLiteHealthRecordRepository } from "../repositories/SQLiteHealthRecordRepository";
+import { SQLiteAnnotatedRecordRepository } from "../repositories/SQLiteAnnotatedRecordRepository";
 import { SQLiteHealthGoalRepository } from "../repositories/SQLiteHealthGoalRepository";
 import { SQLitePreferencesRepository } from "../repositories/SQLitePreferencesRepository";
 import { healthRecordStore } from "../../store/healthRecords";
@@ -83,7 +85,8 @@ export async function restoreBackup(backup: HealthBackup) {
     useDataMaintenance.getState().busy ||
     healthRecordStore.getState().mutating ||
     healthGoalStore.getState().saving ||
-    usePreferences.getState().busy
+    usePreferences.getState().busy ||
+    usePersonalization.getState().busy
   )
     throw new Error("Please wait for the current save before restoring.");
   useDataMaintenance.setState({ busy: true });
@@ -92,7 +95,7 @@ export async function restoreBackup(backup: HealthBackup) {
     await databaseAccess(async () => {
       await repo.restore(backup);
       committed = true;
-      const records = await new SQLiteHealthRecordRepository(
+      const records = await new SQLiteAnnotatedRecordRepository(
         getDatabase,
       ).getAllRecords();
       const goals = await new SQLiteHealthGoalRepository(
@@ -101,6 +104,10 @@ export async function restoreBackup(backup: HealthBackup) {
       const preferences = await new SQLitePreferencesRepository(
         getDatabase,
       ).get();
+      const personal = await new SQLitePersonalizationRepository(
+        getDatabase,
+      ).get();
+      usePersonalization.setState({ ...personal, loaded: true, error: null });
       healthRecordStore.getState().replaceFromStorage(records);
       healthGoalStore.getState().replaceFromStorage(goals);
       usePreferences.setState({ preferences, loaded: true, error: null });

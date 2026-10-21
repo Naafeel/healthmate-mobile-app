@@ -1,6 +1,6 @@
 import { openDatabaseAsync } from "expo-sqlite";
 import type { DatabaseConnection } from "./connection";
-import { initializeDatabase } from "./preferencesMigration";
+import { initializeExpandedDatabase as initializeDatabase } from "./expandedMigration";
 let opening: Promise<DatabaseConnection> | undefined;
 export function getDatabase(): Promise<DatabaseConnection> {
   if (!opening) {

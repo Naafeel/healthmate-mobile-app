@@ -4,10 +4,10 @@ import {
   createHealthRecordStore,
   type HealthRecordState,
 } from "./createHealthRecordStore";
-import { SQLiteHealthRecordRepository } from "../data/repositories/SQLiteHealthRecordRepository";
+import { SQLiteAnnotatedRecordRepository } from "../data/repositories/SQLiteAnnotatedRecordRepository";
 import { getDatabase } from "../data/database/database";
 export const healthRecordRepository = serializeRepository(
-  new SQLiteHealthRecordRepository(getDatabase),
+  new SQLiteAnnotatedRecordRepository(getDatabase),
 );
 export const healthRecordStore = createHealthRecordStore(
   healthRecordRepository,

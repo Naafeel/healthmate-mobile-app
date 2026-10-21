@@ -39,9 +39,10 @@ export function BackupSettings() {
         Backup & Restore
       </AppText>
       <AppText muted>
-        Protect records, goals, appearance and reminder preferences with a
-        versioned JSON file. It is not encrypted: anyone with the file can read
-        your health information. Choose a private location.
+        Protect records, notes, tags, profile, dashboard layout, goals,
+        appearance and reminder preferences with a versioned JSON file. It is
+        not encrypted: anyone with the file can read your health information.
+        Choose a private location.
       </AppText>
       <AppButton
         label="Backup HealthMate Data"
@@ -49,7 +50,7 @@ export function BackupSettings() {
         onPress={() =>
           Alert.alert(
             "Create a private backup?",
-            "Includes all saved health records, goals and preferences. This readable JSON file contains personal health information. Choose where to save or share it.",
+            "Includes all saved health records, notes, tags, profile, goals and preferences. This readable JSON file contains personal health information. Choose where to save or share it.",
             [
               { text: "Cancel", style: "cancel" },
               {
@@ -101,9 +102,16 @@ export function BackupSettings() {
             {String(preview.preferences.reminderMinute).padStart(2, "0")}
           </AppText>
           <AppText>Created: {preview.exportedAt}</AppText>
+          <AppText>
+            Backup format: {preview.version}.{" "}
+            {preview.version === 1
+              ? "Older backup: profile will be empty, dashboard layout reset to default, and notes/tags cleared."
+              : "Includes profile, dashboard layout, notes and tags."}
+          </AppText>
           <AppText muted>
-            Restoring replaces all current HealthMate records, goals and
-            preferences. Android notification permission is not transferred.
+            Restoring replaces all current HealthMate records, notes, tags,
+            profile, layout, goals and preferences. Android notification
+            permission is not transferred.
           </AppText>
           <AppButton
             label="Confirm Restore"

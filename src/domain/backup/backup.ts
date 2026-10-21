@@ -1,3 +1,6 @@
+import { validateAnnotations } from "../records/annotations";
+import { validateProfile, type Profile } from "../profile/profile";
+import { validateLayout, type Widget } from "../dashboard/layout";
 import { validateRecordInput, localDate } from "../records/validation";
 import { validateGoals } from "../goals/validation";
 import {
@@ -10,7 +13,9 @@ export const maxBackupBytes = 5 * 1024 * 1024,
   maxBackupRecords = 20000;
 export interface HealthBackup {
   format: "healthmate-backup";
-  version: 1;
+  version: 1 | 2;
+  profile?: Profile;
+  layout?: Widget[];
   exportedAt: string;
   records: CreateHealthRecord[];
   goals: GoalValues;
@@ -29,6 +34,10 @@ export function validateBackup(
   value: unknown,
   today = localDate(),
 ): HealthBackup {
+  const expanded =
+    !!value &&
+    typeof value === "object" &&
+    (value as HealthBackup).version === 2;
   keys(value, [
     "format",
     "version",
@@ -36,9 +45,10 @@ export function validateBackup(
     "records",
     "goals",
     "preferences",
+    ...(expanded ? ["profile", "layout"] : []),
   ]);
   const b = value as HealthBackup;
-  if (b.format !== "healthmate-backup" || b.version !== 1)
+  if (b.format !== "healthmate-backup" || ![1, 2].includes(b.version))
     throw new Error("Unsupported HealthMate backup format or version.");
   if (
     typeof b.exportedAt !== "string" ||
@@ -51,7 +61,14 @@ export function validateBackup(
     throw new Error("Backup record count is invalid or too large.");
   const dates = new Set<string>();
   for (const r of b.records) {
-    keys(r, ["date", "steps", "calories", "water"]);
+    keys(r, [
+      "date",
+      "steps",
+      "calories",
+      "water",
+      ...(expanded ? ["note", "tags"] : []),
+    ]);
+    if (expanded) validateAnnotations(r.note, r.tags);
     validateRecordInput(r);
     if (r.date > today) throw new Error("Backup contains future activity.");
     if (dates.has(r.date)) throw new Error("Backup contains duplicate dates.");
@@ -60,9 +77,13 @@ export function validateBackup(
   keys(b.goals, ["steps", "calories", "water"]);
   validateGoals(b.goals);
   validatePreferences(b.preferences);
+  const extra = expanded
+    ? { profile: validateProfile(b.profile), layout: validateLayout(b.layout) }
+    : {};
   return {
+    ...extra,
     format: "healthmate-backup",
-    version: 1,
+    version: b.version,
     exportedAt: b.exportedAt,
     records: b.records
       .map((r) => ({ ...r }))

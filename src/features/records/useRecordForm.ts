@@ -24,6 +24,10 @@ export function useRecordForm(
     calories: "",
     water: initialWater,
   });
+  const [note, setNote] = useState("");
+  const [tags, setTags] = useState<
+    import("@/domain/records/annotations").ActivityTag[]
+  >([]);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(id !== undefined);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -44,6 +48,8 @@ export function useRecordForm(
           setLoadError("This record no longer exists. Return to Records.");
           return;
         }
+        setNote(record.note ?? "");
+        setTags(record.tags ?? []);
         setFields({
           date: record.date,
           steps: String(record.steps),
@@ -79,7 +85,9 @@ export function useRecordForm(
     }
     submitting.current = true;
     try {
-      await healthRecordStore.getState().save(result.input, id);
+      await healthRecordStore
+        .getState()
+        .save({ ...result.input, note, tags }, id);
       if (returnToCalendar && router.canGoBack()) router.back();
       else if (returnToCalendar) router.replace("/calendar");
       else router.replace("/(tabs)/records");
@@ -92,6 +100,10 @@ export function useRecordForm(
     }
   }
   return {
+    note,
+    setNote,
+    tags,
+    setTags,
     fields,
     errors,
     change,
