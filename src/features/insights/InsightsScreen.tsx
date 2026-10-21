@@ -1,3 +1,4 @@
+import { TrendComparison } from "./TrendComparison";
 import { useMemo, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { AppScreen } from "@/components/AppScreen";
@@ -162,6 +163,7 @@ export function InsightsScreen() {
               highest-value tie.
             </AppText>
           </AppCard>
+          <TrendComparison records={state.records} metric={metric} period={period} mode={mode} today={state.today} unit={selected.unit} />
           <ActivityChart
             key={`${mode}:${period.start}:${metric}`}
             days={result.data.days}
