@@ -14,8 +14,9 @@ import {
 } from "@/domain/calendar/activityCalendar";
 import { calendarDate } from "@/domain/records/validation";
 import { periodFor, adjacentPeriod } from "@/domain/calendar/periods";
-import { theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 export function CalendarScreen() {
+  const theme = useTheme();
   const state = useRecordOverview();
   const [anchor, setAnchor] = useState<string | null>(null),
     [selection, setSelection] = useState<string | null>(null);

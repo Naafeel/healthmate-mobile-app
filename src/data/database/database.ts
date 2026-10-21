@@ -1,13 +1,13 @@
 import { openDatabaseAsync } from "expo-sqlite";
 import type { DatabaseConnection } from "./connection";
-import { migrateDatabase } from "./migrations";
+import { initializeDatabase } from "./preferencesMigration";
 let opening: Promise<DatabaseConnection> | undefined;
 export function getDatabase(): Promise<DatabaseConnection> {
   if (!opening) {
     opening = (async () => {
       const db = await openDatabaseAsync("healthmate.db");
       try {
-        await migrateDatabase(db);
+        await initializeDatabase(db);
         return db;
       } catch (error) {
         await db.closeAsync();

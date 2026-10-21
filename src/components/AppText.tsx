@@ -1,8 +1,9 @@
 import { Text, type TextProps } from "react-native";
-import { theme } from "@/theme/tokens";
+import { theme as baseTheme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 
 type Props = TextProps & {
-  variant?: keyof typeof theme.typography;
+  variant?: keyof typeof baseTheme.typography;
   muted?: boolean;
 };
 export function AppText({
@@ -11,6 +12,7 @@ export function AppText({
   style,
   ...props
 }: Props) {
+  const theme = useTheme();
   return (
     <Text
       {...props}

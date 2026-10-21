@@ -56,3 +56,6 @@ export const theme = {
     iconTile: 64,
   },
 } as const;
+
+export type Theme = Omit<typeof theme,'colors'|'metrics'> & {colors:{[K in keyof typeof theme.colors]:string};metrics:{[K in keyof typeof theme.metrics]:{foreground:string;background:string}}};
+export const darkTheme:Theme={...theme,colors:{background:'#101C19',surface:'#192B25',primary:'#82DDBB',primaryPressed:'#A3E8CD',primarySoft:'#233F34',text:'#EDF8F2',muted:'#B3C9BF',border:'#486457',onPrimary:'#10291F',error:'#FFB4AA',disabled:'#2D3F36',disabledText:'#A9BDB2'},metrics:{steps:{foreground:'#82DDBB',background:'#233F34'},calories:{foreground:'#FFBF96',background:'#422F24'},water:{foreground:'#9ECFFD',background:'#213849'}}};

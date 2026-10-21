@@ -6,12 +6,15 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { theme } from "@/theme/tokens";
+import type { Theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 export function AppScreen({
   children,
   tab = true,
   keyboard = false,
 }: PropsWithChildren<{ tab?: boolean; keyboard?: boolean }>) {
+  const theme = useTheme();
+  const styles = createStyles(theme);
   return (
     <SafeAreaView
       style={styles.screen}
@@ -33,7 +36,7 @@ export function AppScreen({
     </SafeAreaView>
   );
 }
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   screen: { flex: 1, backgroundColor: theme.colors.background },
   scroll: { flexGrow: 1, alignItems: "center" },
   content: {

@@ -6,13 +6,16 @@ import { AppText } from "@/components/AppText";
 import { AppCard } from "@/components/AppCard";
 import { AppButton } from "@/components/AppButton";
 import { EmptyState } from "@/components/EmptyState";
-import { theme } from "@/theme/tokens";
+import type { Theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 import { useDashboard } from "./useDashboard";
 import { formatDashboardDate } from "./dashboardSelectors";
 import { HealthMetricCard } from "./components/HealthMetricCard";
 import { RecentRecordPreview } from "./components/RecentRecordPreview";
 import { useHealthGoals } from "@/store/healthGoals";
 export function DashboardScreen() {
+  const theme = useTheme();
+  const styles = createStyles(theme);
   const { today, summary, retry, streaks } = useDashboard();
   const goals = useHealthGoals((s) => s.goals);
   const goalsLoaded = useHealthGoals((s) => s.hasLoaded);
@@ -194,4 +197,4 @@ export function DashboardScreen() {
     </AppScreen>
   );
 }
-const styles = StyleSheet.create({ section: { gap: theme.spacing.compact } });
+const createStyles = (theme: Theme) => StyleSheet.create({ section: { gap: theme.spacing.compact } });

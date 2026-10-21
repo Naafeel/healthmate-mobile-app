@@ -2,7 +2,8 @@ import { View, StyleSheet } from "react-native";
 import { AppCard } from "./AppCard";
 import { AppIcon, type IconName } from "./AppIcon";
 import { AppText } from "./AppText";
-import { theme } from "@/theme/tokens";
+import type { Theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 export function EmptyState({
   icon,
   title,
@@ -12,6 +13,8 @@ export function EmptyState({
   title: string;
   description: string;
 }) {
+  const theme = useTheme();
+  const styles = createStyles(theme);
   return (
     <AppCard style={styles.card}>
       <View style={styles.icon}>
@@ -26,7 +29,7 @@ export function EmptyState({
     </AppCard>
   );
 }
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   card: { alignItems: "center", paddingVertical: theme.spacing.roomy },
   icon: {
     width: theme.size.iconTile,

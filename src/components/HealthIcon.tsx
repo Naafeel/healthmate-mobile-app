@@ -1,9 +1,12 @@
 import { StyleSheet, View } from "react-native";
 
-import { theme } from "@/theme/tokens";
+import type { Theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 
 /** A local, font-independent health cross. Decorative beside the screen title. */
 export function HealthIcon() {
+  const theme = useTheme();
+  const styles = createStyles(theme);
   return (
     <View
       style={styles.container}
@@ -16,7 +19,7 @@ export function HealthIcon() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     width: 88,
     height: 88,

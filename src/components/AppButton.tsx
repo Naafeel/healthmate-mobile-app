@@ -1,7 +1,8 @@
 import { Pressable, StyleSheet, View, type PressableProps } from "react-native";
 import { AppText } from "./AppText";
 import { AppIcon, type IconName } from "./AppIcon";
-import { theme } from "@/theme/tokens";
+import type { Theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 type Props = Omit<PressableProps, "children" | "style"> & {
   label: string;
   icon?: IconName;
@@ -14,6 +15,8 @@ export function AppButton({
   disabled,
   ...props
 }: Props) {
+  const theme = useTheme();
+  const styles = createStyles(theme);
   const primary = variant === "primary";
   const color = disabled
     ? theme.colors.disabledText
@@ -52,7 +55,7 @@ export function AppButton({
     </Pressable>
   );
 }
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   button: {
     minHeight: theme.size.button,
     borderRadius: theme.radius.button,

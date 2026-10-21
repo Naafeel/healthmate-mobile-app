@@ -8,7 +8,7 @@ import { AppButton } from "@/components/AppButton";
 import { EmptyState } from "@/components/EmptyState";
 import { useRecordOverview } from "@/hooks/useRecordOverview";
 import type { Metric } from "@/domain/models/HealthGoals";
-import { theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 import { ActivityChart } from "./ActivityChart";
 import { SelectionControl } from "./SelectionControl";
 import {
@@ -25,6 +25,7 @@ const metrics = {
   water: { label: "Water intake", unit: "ml" },
 };
 export function InsightsScreen() {
+  const theme = useTheme();
   const state = useRecordOverview();
   const [mode, setMode] = useState<PeriodMode>("weekly"),
     [metric, setMetric] = useState<Metric>("steps");

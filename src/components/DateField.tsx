@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { AppText } from "./AppText";
 import { AppButton } from "./AppButton";
 import { calendarDate, localDate } from "@/domain/records/validation";
-import { theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 export function DateField({
   value,
   onChange,
@@ -17,6 +17,7 @@ export function DateField({
   error?: string;
   disabled?: boolean;
 }) {
+  const theme = useTheme();
   return (
     <View style={{ gap: theme.spacing.small }}>
       <AppText variant="label">{label}</AppText>

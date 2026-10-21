@@ -4,9 +4,12 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { HealthIcon } from "@/components/HealthIcon";
-import { theme } from "@/theme/tokens";
+import type { Theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 
 export function WelcomeScreen() {
+  const theme = useTheme();
+  const styles = createStyles(theme);
   return (
     <SafeAreaView style={styles.screen}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -37,7 +40,7 @@ export function WelcomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   action: { alignSelf: "stretch", marginTop: theme.spacing.large },
   screen: { flex: 1, backgroundColor: theme.colors.background },
   content: {

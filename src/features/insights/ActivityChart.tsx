@@ -2,7 +2,7 @@ import { ScrollView, View } from "react-native";
 import { AppCard } from "@/components/AppCard";
 import { AppText } from "@/components/AppText";
 import { calendarDate } from "@/domain/records/validation";
-import { theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 import {
   formatAnalyticsDate,
   formatAnalyticsNumber,
@@ -19,6 +19,7 @@ export function ActivityChart({
   unit: string;
   color: string;
 }) {
+  const theme = useTheme();
   const maximum = Math.max(1, ...days.map((day) => day.value ?? 0));
   return (
     <AppCard>

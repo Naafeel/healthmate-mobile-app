@@ -12,13 +12,14 @@ import {
   type GoalErrors,
 } from "@/domain/goals/validation";
 import { healthGoalStore, useHealthGoals } from "@/store/healthGoals";
-import { theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 const labels = {
   steps: "Daily step target (steps)",
   calories: "Daily calories-burned target (kcal)",
   water: "Daily water-intake target (ml)",
 };
 export function GoalSettings() {
+  const theme = useTheme();
   const goals = useHealthGoals((s) => s.goals),
     loaded = useHealthGoals((s) => s.hasLoaded);
   const loading = useHealthGoals((s) => s.loading),

@@ -1,6 +1,7 @@
 import { StyleSheet, TextInput, View } from "react-native";
 import { AppText } from "./AppText";
-import { theme } from "@/theme/tokens";
+import type { Theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 export function MeasurementField({
   label,
   value,
@@ -16,6 +17,8 @@ export function MeasurementField({
   disabled?: boolean;
   optional?: boolean;
 }) {
+  const theme = useTheme();
+  const styles = createStyles(theme);
   return (
     <View style={styles.field}>
       <AppText variant="label">{label}</AppText>
@@ -36,6 +39,8 @@ export function MeasurementField({
         placeholder={optional ? "Not set" : "0"}
         placeholderTextColor={theme.colors.muted}
         selectTextOnFocus={false}
+        cursorColor={theme.colors.primary}
+        selectionColor={theme.colors.primary}
         style={[
           styles.input,
           error ? { borderColor: theme.colors.error } : undefined,
@@ -49,7 +54,7 @@ export function MeasurementField({
     </View>
   );
 }
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   field: { gap: theme.spacing.small },
   input: {
     ...theme.typography.body,

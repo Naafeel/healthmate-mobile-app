@@ -7,7 +7,7 @@ import { AppButton } from "@/components/AppButton";
 import { DateField } from "@/components/DateField";
 import { MeasurementField } from "@/components/MeasurementField";
 import { useRecordForm } from "./useRecordForm";
-import { theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 export function RecordFormScreen({
   id,
   initialDate,
@@ -17,6 +17,7 @@ export function RecordFormScreen({
   initialDate?: string;
   returnToCalendar?: boolean;
 }) {
+  const theme = useTheme();
   const form = useRecordForm(id, initialDate, returnToCalendar);
   function back() {
     Keyboard.dismiss();

@@ -17,8 +17,11 @@ import { DateField } from "@/components/DateField";
 import { EmptyState } from "@/components/EmptyState";
 import { healthRecordStore, useHealthRecords } from "@/store/healthRecords";
 import type { HealthRecord } from "@/domain/models/HealthRecord";
-import { theme } from "@/theme/tokens";
+import type { Theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 export function RecordsScreen() {
+  const theme = useTheme();
+  const styles = createStyles(theme);
   const records = useHealthRecords((s) => s.records),
     loading = useHealthRecords((s) => s.loading),
     busy = useHealthRecords((s) => s.mutating);
@@ -206,7 +209,7 @@ export function RecordsScreen() {
     </SafeAreaView>
   );
 }
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   screen: { flex: 1, backgroundColor: theme.colors.background },
   content: {
     padding: theme.spacing.large,

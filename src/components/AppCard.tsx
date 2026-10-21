@@ -1,9 +1,12 @@
 import { View, StyleSheet, type ViewProps } from "react-native";
-import { theme } from "@/theme/tokens";
+import type { Theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 export function AppCard({ style, ...props }: ViewProps) {
+  const theme = useTheme();
+  const styles = createStyles(theme);
   return <View {...props} style={[styles.card, style]} />;
 }
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   card: {
     backgroundColor: theme.colors.surface,
     borderWidth: theme.border.width,

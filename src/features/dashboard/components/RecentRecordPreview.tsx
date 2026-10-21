@@ -3,7 +3,8 @@ import { AppCard } from "@/components/AppCard";
 import { AppIcon } from "@/components/AppIcon";
 import { AppText } from "@/components/AppText";
 import type { HealthRecord } from "@/domain/models/HealthRecord";
-import { theme } from "@/theme/tokens";
+import type { Theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 import { formatMeasurement, formatRecentDate } from "../dashboardSelectors";
 export function RecentRecordPreview({
   record,
@@ -12,6 +13,8 @@ export function RecentRecordPreview({
   record: HealthRecord;
   today: string;
 }) {
+  const theme = useTheme();
+  const styles = createStyles(theme);
   return (
     <AppCard style={styles.card}>
       <View style={styles.date}>
@@ -28,7 +31,7 @@ export function RecentRecordPreview({
     </AppCard>
   );
 }
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   card: { padding: theme.spacing.medium },
   date: {
     flexDirection: "row",

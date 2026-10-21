@@ -2,7 +2,8 @@ import { StyleSheet, View } from "react-native";
 import { AppCard } from "@/components/AppCard";
 import { AppIcon, type IconName } from "@/components/AppIcon";
 import { AppText } from "@/components/AppText";
-import { theme } from "@/theme/tokens";
+import type { Theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 import { formatMeasurement } from "../dashboardSelectors";
 import { GoalProgressBar } from "./GoalProgressBar";
 type Props = {
@@ -23,6 +24,8 @@ export function HealthMetricCard({
   goal = null,
   goalsAvailable = false,
 }: Props) {
+  const theme = useTheme();
+  const styles = createStyles(theme);
   const color = theme.metrics[tone];
   const formatted = formatMeasurement(value);
   return (
@@ -60,7 +63,7 @@ export function HealthMetricCard({
     </AppCard>
   );
 }
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   card: {
     flexDirection: "row",
     alignItems: "center",

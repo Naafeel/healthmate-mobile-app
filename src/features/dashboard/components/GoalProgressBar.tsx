@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { AppText } from "@/components/AppText";
 import { goalProgress } from "@/domain/goals/progress";
-import { theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 export function GoalProgressBar({
   actual,
   goal,
@@ -13,6 +13,7 @@ export function GoalProgressBar({
   unit: string;
   color: string;
 }) {
+  const theme = useTheme();
   const progress = goalProgress(actual, goal);
   if (progress.status !== "ready")
     return (

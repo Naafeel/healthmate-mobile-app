@@ -1,6 +1,6 @@
 import { Pressable, View } from "react-native";
 import { AppText } from "@/components/AppText";
-import { theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 export function SelectionControl<T extends string>({
   label,
   options,
@@ -12,6 +12,7 @@ export function SelectionControl<T extends string>({
   value: T;
   onChange: (value: T) => void;
 }) {
+  const theme = useTheme();
   return (
     <View style={{ gap: theme.spacing.small }}>
       <AppText variant="label">{label}</AppText>

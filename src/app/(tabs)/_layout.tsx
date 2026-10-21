@@ -1,7 +1,7 @@
 import { Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppIcon, type IconName } from "@/components/AppIcon";
-import { theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 const destinations: {
   name: string;
   title: string;
@@ -35,6 +35,7 @@ const destinations: {
 ];
 export const unstable_settings = { anchor: "dashboard" };
 export default function TabLayout() {
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
   return (
     <Tabs

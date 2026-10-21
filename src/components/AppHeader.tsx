@@ -1,7 +1,8 @@
 import { Pressable, StyleSheet, View } from "react-native";
 import { AppText } from "./AppText";
 import { AppIcon } from "./AppIcon";
-import { theme } from "@/theme/tokens";
+import type { Theme } from "@/theme/tokens";
+import { useTheme } from "@/theme/useTheme";
 export function AppHeader({
   title,
   eyebrow,
@@ -11,6 +12,8 @@ export function AppHeader({
   eyebrow?: string;
   onBack?: () => void;
 }) {
+  const theme = useTheme();
+  const styles = createStyles(theme);
   return (
     <View style={styles.header}>
       {onBack && (
@@ -36,7 +39,7 @@ export function AppHeader({
     </View>
   );
 }
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",

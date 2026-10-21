@@ -1,3 +1,4 @@
+import { AppearanceSettings } from "./AppearanceSettings";
 import { AppScreen } from "@/components/AppScreen";
 import { AppHeader } from "@/components/AppHeader";
 import { AppText } from "@/components/AppText";
@@ -9,17 +10,10 @@ export function SettingsScreen() {
     <AppScreen keyboard>
       <AppHeader eyebrow="MAKE IT YOURS" title="Settings" />
       <AppText muted>A thoughtful space for your health preferences.</AppText>
+      <AppearanceSettings />
       <GoalSettings />
       <ExportRecordsCard />
-      <AppCard>
-        <AppText variant="heading" accessibilityRole="header">
-          Application preferences
-        </AppText>
-        <AppText muted>
-          Planned · Preferences will appear here when supported. HealthMate
-          currently uses a calm, light appearance.
-        </AppText>
-      </AppCard>
+
       <AppCard>
         <AppText variant="eyebrow" muted>
           ABOUT HEALTHMATE
