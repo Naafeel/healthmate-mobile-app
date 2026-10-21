@@ -43,7 +43,7 @@ export function weeklySummary(
     `Days recorded: ${rows.length}`,
     `Logging coverage: ${rows.length} of 7 calendar days`,
     ...metrics.flatMap((m) => [
-      `${labels[m.key]} — total: ${format(m.total)}`,
+      `${labels[m.key]} — total: ${rows.length ? format(m.total) : "Unavailable (no recorded days)"}`,
       `${labels[m.key]} — average per recorded day: ${m.average === null ? "Unavailable (no recorded days)" : format(m.average)}`,
     ]),
     "Missing dates are unrecorded; saved zeros count as recorded days.",

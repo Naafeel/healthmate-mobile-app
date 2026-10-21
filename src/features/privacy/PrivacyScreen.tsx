@@ -17,6 +17,7 @@ export function PrivacyScreen() {
   const [typed, setTyped] = useState(""),
     [message, setMessage] = useState("");
   const lock = useRef(false);
+  const dialog = useRef(false);
   async function execute(all: boolean) {
     if (lock.current) return;
     lock.current = true;
@@ -30,36 +31,61 @@ export function PrivacyScreen() {
     }
   }
   function confirm(all: boolean) {
-    if (lock.current || busy) return;
+    if (lock.current || busy || dialog.current) return;
     if (all && typed !== "RESET") {
       setMessage("Type RESET exactly before confirming a complete reset.");
       return;
     }
+    dialog.current = true;
     Alert.alert(
       all ? "Reset all HealthMate data?" : "Delete all health records?",
       all
         ? "Permanently deletes daily records, notes, tags, goals, profile, dashboard layout, appearance and reminder preferences. Own scheduled reminders will be cancelled. This cannot be undone. External backups and shared files remain unchanged. Create a backup first if needed."
         : "Permanently deletes every daily record and its notes/tags. Goals, profile, theme, layout and reminders are preserved. This cannot be undone. External backups remain unchanged. Create a backup first if needed.",
       [
-        { text: "Cancel", style: "cancel" },
+        {
+          text: "Cancel",
+          style: "cancel",
+          onPress: () => {
+            dialog.current = false;
+          },
+        },
         {
           text: "Backup first",
-          onPress: () =>
+          onPress: () => {
+            dialog.current = false;
             setMessage(
               "No data deleted. Use Backup HealthMate Data above, save it privately, then return to the deletion action.",
-            ),
+            );
+          },
         },
         {
           text: all ? "Reset all data" : "Delete records",
           style: "destructive",
-          onPress: () => void execute(all),
+          onPress: () => {
+            dialog.current = false;
+            void execute(all);
+          },
         },
       ],
+      {
+        cancelable: true,
+        onDismiss: () => {
+          dialog.current = false;
+        },
+      },
     );
   }
   return (
     <AppScreen tab={false} keyboard>
-      <AppHeader title="Privacy & Data" onBack={() => router.back()} />
+      <AppHeader
+        title="Privacy & Data"
+        onBack={() =>
+          router.canGoBack()
+            ? router.back()
+            : router.replace("/(tabs)/settings")
+        }
+      />
       <AppCard>
         <AppText variant="heading">Your information stays local</AppText>
         <AppText>

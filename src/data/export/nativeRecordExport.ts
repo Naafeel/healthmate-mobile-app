@@ -4,6 +4,16 @@ import type { ExportDependencies } from "../../features/export/exportRecords";
 import { healthRecordRepository } from "../../store/healthRecords";
 const folder = () => new Directory(Paths.cache, "healthmate-exports");
 /** Clean only our own cache files, never the database or other applications' files. */
+export function removeTemporaryExports() {
+  const dir = folder();
+  if (!dir.exists) return;
+  for (const file of dir.list())
+    if (
+      file instanceof File &&
+      /^healthmate-records-\d{4}-\d{2}-\d{2}\.csv$/.test(file.name)
+    )
+      file.delete();
+}
 export function cleanExpiredExports() {
   const directory = folder();
   if (!directory.exists) return;

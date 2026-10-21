@@ -86,7 +86,10 @@ export function validateBackup(
     version: b.version,
     exportedAt: b.exportedAt,
     records: b.records
-      .map((r) => ({ ...r }))
+      .map((r) => ({
+        ...r,
+        ...(expanded ? validateAnnotations(r.note, r.tags) : {}),
+      }))
       .sort((a, b) => a.date.localeCompare(b.date)),
     goals: { ...b.goals },
     preferences: { ...b.preferences },
@@ -102,4 +105,14 @@ export function parseBackup(text: string, today = localDate()) {
     throw new Error("This file is not valid JSON.");
   }
   return validateBackup(value, today);
+}
+
+/** Generated files must meet the same limits as imported files. */
+export function serializeBackup(value: HealthBackup) {
+  const text = JSON.stringify(validateBackup(value), null, 2);
+  if (new TextEncoder().encode(text).byteLength > maxBackupBytes)
+    throw new Error(
+      "Backup exceeds the 5 MB limit. No incomplete or unrestorable file was created.",
+    );
+  return text;
 }

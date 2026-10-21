@@ -5,6 +5,7 @@ import * as Sharing from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
 import {
   maxBackupBytes,
+  serializeBackup,
   parseBackup,
   type HealthBackup,
 } from "../../domain/backup/backup";
@@ -22,6 +23,16 @@ import { useDataMaintenance } from "../../store/dataMaintenance";
 import { syncReminder } from "../reminders/nativeReminder";
 const repo = new SQLiteBackupRepository(getDatabase);
 const folder = () => new Directory(Paths.cache, "healthmate-backups");
+export function removeTemporaryBackups() {
+  const dir = folder();
+  if (!dir.exists) return;
+  for (const file of dir.list())
+    if (
+      file instanceof File &&
+      /^healthmate-backup-\d{4}-\d{2}-\d{2}\.json$/.test(file.name)
+    )
+      file.delete();
+}
 export function cleanExpiredBackups() {
   const dir = folder();
   if (!dir.exists) return;
@@ -42,8 +53,8 @@ export async function shareBackup() {
   dir.create({ idempotent: true, intermediates: true });
   const file = new File(dir, "healthmate-backup-" + localDate() + ".json");
   try {
+    const text = serializeBackup(backup);
     file.create({ overwrite: true });
-    const text = JSON.stringify(backup, null, 2);
     await file.write(text);
     if ((await file.text()) !== text)
       throw new Error("Backup file verification failed.");

@@ -1,3 +1,4 @@
+import { shiftDay } from "../src/domain/calendar/dates";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { emptyFilters, filterRecords } from "../src/domain/records/search";
@@ -88,6 +89,11 @@ test("Search processes a sizeable collection without duplicate result dates", ()
   const many = Array.from({ length: 20000 }, (_, i) => ({
     ...rows[i % 2],
     id: i + 1,
+    date: shiftDay("1960-01-01", i),
   }));
-  assert.equal(filterRecords(many, emptyFilters()).length, 2);
+  assert.equal(filterRecords(many, emptyFilters()).length, 20000);
+  assert.equal(
+    filterRecords(many, { ...emptyFilters(), water: "500" }).length,
+    10000,
+  );
 });
