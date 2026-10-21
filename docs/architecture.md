@@ -9,28 +9,28 @@
 
 ## Layer responsibilities
 
-Domain models/contracts/validation, SQLite database/repository, and shared Zustand state are now implemented. Shared hooks and utilities remain deferred until needed.
+Domain models/contracts/validation, SQLite database/repository, and shared Zustand state are now implemented. Shared hooks now own record overview lifecycle for Dashboard and Insights.
 
-| Location | Responsibility |
-| --- | --- |
-| src/features/<feature>/ | Screens, feature components, view-model hooks, and validation |
-| src/hooks/ | Hooks shared by multiple features |
-| src/domain/models/ | Framework-independent domain types |
-| src/domain/repositories/ | Repository contracts expressed in domain types |
-| src/data/database/ | Implemented SQLite connection, configuration, migration v1 and schema; lecturer confirmation pending |
-| src/data/repositories/ | Repository implementations using SQLite |
-| src/store/ | Zustand stores for cross-feature application state |
-| src/utils/ | Small shared pure helpers |
+| Location                 | Responsibility                                                                                                      |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| src/features/<feature>/  | Screens, feature components, view-model hooks, and validation                                                       |
+| src/hooks/               | Hooks shared by multiple features                                                                                   |
+| src/domain/models/       | Framework-independent domain types                                                                                  |
+| src/domain/repositories/ | Repository contracts expressed in domain types                                                                      |
+| src/data/database/       | Implemented SQLite connection, configuration, migrations v1 (records) and v2 (goals); lecturer confirmation pending |
+| src/data/repositories/   | Repository implementations using SQLite                                                                             |
+| src/store/               | Zustand stores for cross-feature application state                                                                  |
+| src/utils/               | Small shared pure helpers                                                                                           |
 
 The intended dependency flow is View -> view-model hook -> repository interface -> repository implementation -> SQLite. Domain types must not import React or SQLite. Route files only compose navigation and feature screens. A feature can own local state; Zustand is reserved for shared state. No dependency injection framework or generic base repository is needed for initialization.
 
-Core records are stored locally through Expo SQLite and work without a backend. Development loads JavaScript from Metro; this does not establish a production offline launch test. Models, repository contracts, validation, migrations, CRUD, exact-date filtering, Zustand state, and automated tests are implemented. The daily dashboard now selects exact saved totals and recent records; charts and analytics remain future work. No cloud services, authentication, Flutter, paid dependencies, or native project modifications are included.
+Core records are stored locally through Expo SQLite and work without a backend. Development loads JavaScript from Metro; this does not establish a production offline launch test. Models, repository contracts, validation, migrations, CRUD, exact-date filtering, Zustand state, and automated tests are implemented. The daily dashboard selects exact saved totals, personal goal progress and recent records. Insights derives weekly/monthly charts and statistics from canonical saved records. No cloud services, authentication, Flutter, paid dependencies, or native project modifications are included.
 
 ## Implemented navigation
 
 The root Stack contains welcome (index), the four-tab group, add-record, and edit-record/[id]. Routes re-export feature screens. Both navigator headers are hidden; AppHeader supplies the sole visible title. Shared components do not import feature modules. Get Started pushes Dashboard, preserving welcome below it. Tabs use history back behavior. Add Record pushes onto the root stack so Back returns to the invoking tab; its header uses router.back with a Dashboard fallback for direct entry. No onboarding persistence is used. SDK 58 uses unstable_settings.anchor for stack/tab anchors.
 
-~~~text
+```text
 src/app/
   _layout.tsx
   index.tsx                / (welcome)
@@ -42,9 +42,9 @@ src/app/
     settings.tsx           /settings
   add-record.tsx           /add-record
   edit-record/[id].tsx      /edit-record/:id
-~~~
+```
 
-~~~mermaid
+```mermaid
 flowchart TD
   W[Welcome] -->|Get Started| D[Dashboard]
   D <--> R[Records]
@@ -55,13 +55,13 @@ flowchart TD
   A -->|Header or Android Back| T[Invoking tab]
   T -->|Tab selection| D
   D -->|Android Back after tab history| W
-~~~
+```
 
 All four tabs are directly selectable from every tab. The diagram abbreviates these links; Android Back traverses visited-tab history before popping the root stack.
 
 ## Implemented record data flow
 
-~~~mermaid
+```mermaid
 flowchart LR
   V[RecordFormScreen / RecordsScreen] --> VM[useRecordForm / Zustand store]
   VM --> C[HealthRecordRepository contract]
@@ -69,7 +69,7 @@ flowchart LR
   R --> DB[healthmate.db / health_records]
   V --> VAL[Domain validation]
   R --> VAL
-~~~
+```
 
 The form view-model owns draft strings, field errors, load/retry state, and duplicate-date recovery. Zustand owns the canonical saved record list, loading/mutation flags, feedback, refresh, save and delete operations. It does not persist a second copy in AsyncStorage; SQLite is the source of truth. Mutations synchronize saved rows, sort newest first, and refresh after success. A revision guard prevents older loads from replacing newer mutations. Failed deletions keep their error visible for retry.
 
@@ -89,7 +89,7 @@ A backward-compatible hasLoaded flag in the existing store is set only by succes
 
 createDashboardLifecycle is independently testable: navigation focus activates it, duplicate activation is ignored, foreground return rechecks the calendar and refreshes, and one timeout targets the next local midnight. Blur/background cancels it; focus/unmount removes the AppState subscription. Local calendar arithmetic supports leap days, timezone offsets and DST; no UTC slicing or minute-by-minute polling is used.
 
-~~~mermaid
+```mermaid
 flowchart LR
   DB[Existing healthmate.db] --> R[Existing SQLite repository]
   R --> S[Canonical Zustand records / hasLoaded]
@@ -101,6 +101,12 @@ flowchart LR
   A --> S
   E --> S
   H --> S
-~~~
+```
 
 Full details and evidence: dashboard-design.md and dashboard-verification.md.
+
+## Goals and calendar analytics
+
+HealthGoalRepository and SQLiteHealthGoalRepository handle a nullable singleton settings row through the existing connection. A dedicated goal store shares saved settings with Settings and Dashboard; record state is not duplicated. Settings owns unsaved draft strings. Domain goal validation and pure progress functions remain independent of React/SQLite.
+
+useRecordOverview shares focus, foreground and local-midnight behavior between Dashboard and Insights. The prior dashboardLifecycle module re-exports the shared pure controller for regression compatibility. Insights memoizes calendar positions and statistics from canonical saved records; selectors change only the presentation, without redundant SQL queries or maintained analytics caches. No current-goal comparisons are applied to historical activity. See goals-insights-design.md for migration v2, table diagram, formulas and component responsibilities, and goals-insights-verification.md for the 72-test result and native evidence.

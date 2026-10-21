@@ -8,7 +8,7 @@ Functional daily dashboard and local record management completed. Implemented: t
 
 SQLite is implemented provisionally with expo-sqlite while lecturer clarification about the coursework's Flutter-specific sqflite wording is pending. Flutter remains prohibited. No cloud account or backend is used.
 
-Planned: Insights charts, analytics, personal goals, and later wellness features. These are not implemented.
+Implemented in Prompt 05: persistent optional daily goals, Dashboard progress, and weekly/monthly Insights for saved activity. Later wellness features remain planned.
 
 ## Stack
 
@@ -50,7 +50,7 @@ npx expo install --check
 npm test
 ```
 
-See docs/verification.md for initialization history and docs/ui-verification.md for the UI/navigation checks. A successful bundle is not proof that Android rendered the application. Run npm test for 46 validation, real desktop SQLite, state, dashboard, formatting, and lifecycle tests. See docs/crud-verification.md and docs/dashboard-verification.md for the separate Android checks.
+See docs/verification.md for initialization history and docs/ui-verification.md for the UI/navigation checks. A successful bundle is not proof that Android rendered the application. Run npm test for 72 validation, real desktop SQLite, state, dashboard, goals, analytics, formatting, and lifecycle tests, including all 46 prior tests. See docs/crud-verification.md, docs/dashboard-verification.md and docs/goals-insights-verification.md for separate Android checks.
 
 ## Structure
 
@@ -97,3 +97,11 @@ If Expo Go reports a missing native module immediately after installing dependen
 Dashboard reads the same SQLite-backed Zustand list as Records. Today’s Overview shows the single local-date summary: saved steps, calories burned in kcal, and water in ml. Missing today is an unrecorded state; a saved 0/0/0 row displays real zeros. No activity is estimated or summed across days. Add Today opens the existing Add form; Edit Today opens the existing saved ID. Recent Activity shows up to three real dates, newest first, with View All Records navigation.
 
 Dashboard refreshes on focus, foreground return and the next local midnight, with timer/subscription cleanup. Initial loading and load failure are distinct from an empty database; Retry reuses the shared store. See [dashboard design](docs/dashboard-design.md) and [dashboard verification](docs/dashboard-verification.md). No new packages or schema migrations were needed for Prompt 04.
+
+## Personal goals and Insights
+
+Settings now saves optional positive daily targets for steps, calories burned (kcal) and water (ml). Blank fields disable individual goals; Clear changes take effect when Save goals is pressed. No targets are recommended or preconfigured. SQLite schema v2 adds a singleton health_goals table transactionally without rebuilding health_records.
+
+Dashboard displays actual saved daily values alongside current goals and rounded percentages, including values above 100%; only bar fill is capped. Missing today remains unrecorded. Insights provides Monday–Sunday weeks and calendar months, metric selection, previous/next navigation, recorded-day totals/averages/count/highest, and a horizontally scrollable daily chart. Missing, saved zero and future dates remain distinct. Historical charts do not reuse today's goals.
+
+See [goals and Insights design](docs/goals-insights-design.md) and [verification with Android evidence](docs/goals-insights-verification.md). No new packages were added. Prompt 05 development uses port 8085 when earlier Metro servers occupy 8081–8084: `npx expo start --android --lan --port 8085`.
