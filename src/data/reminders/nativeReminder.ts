@@ -1,25 +1,40 @@
-import * as Notifications from "expo-notifications";
-import { AndroidImportance } from "expo-notifications";
 import {
   reconcileReminder,
   reminderId,
   type ReminderPort,
 } from "../../domain/reminders/reconcileReminder";
 import { usePreferences } from "../../store/preferences";
+import { isRunningInExpoGo, requireOptionalNativeModule } from "expo";
+let notifications: Promise<typeof import("expo-notifications")> | undefined;
+async function loadNotifications() {
+  if (
+    isRunningInExpoGo() &&
+    !requireOptionalNativeModule("ExpoTopicSubscriptionModule")
+  )
+    throw new Error(
+      "Reminder scheduling and cancellation require the standalone HealthMate app; this Expo Go client lacks the required notification module. Native verification is pending.",
+    );
+  if (!notifications)
+    notifications = import("expo-notifications").then((module) => {
+      module.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowBanner: true,
+          shouldShowList: true,
+          shouldPlaySound: false,
+          shouldSetBadge: false,
+        }),
+      });
+      return module;
+    });
+  return notifications;
+}
 const channelId = "healthmate-daily";
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
 const port: ReminderPort = {
   permission: async (request) => {
+    const Notifications = await loadNotifications();
     await Notifications.setNotificationChannelAsync(channelId, {
       name: "Daily activity reminder",
-      importance: AndroidImportance.DEFAULT,
+      importance: Notifications.AndroidImportance.DEFAULT,
       enableVibrate: false,
     });
     let permission = await Notifications.getPermissionsAsync();
@@ -27,15 +42,21 @@ const port: ReminderPort = {
       permission = await Notifications.requestPermissionsAsync();
     return permission.granted;
   },
-  list: async () =>
-    (await Notifications.getAllScheduledNotificationsAsync()).map((n) => ({
-      id: n.identifier,
-      hour: Number(n.content.data?.hour),
-      minute: Number(n.content.data?.minute),
-      zone: String(n.content.data?.zone ?? ""),
-    })),
-  cancel: (id) => Notifications.cancelScheduledNotificationAsync(id),
+  list: async () => {
+    const Notifications = await loadNotifications();
+    return (await Notifications.getAllScheduledNotificationsAsync()).map(
+      (n) => ({
+        id: n.identifier,
+        hour: Number(n.content.data?.hour),
+        minute: Number(n.content.data?.minute),
+        zone: String(n.content.data?.zone ?? ""),
+      }),
+    );
+  },
+  cancel: async (id) =>
+    (await loadNotifications()).cancelScheduledNotificationAsync(id),
   schedule: async (hour, minute, zone) => {
+    const Notifications = await loadNotifications();
     await Notifications.scheduleNotificationAsync({
       identifier: reminderId,
       content: {

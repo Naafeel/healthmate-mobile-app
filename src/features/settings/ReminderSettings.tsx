@@ -14,9 +14,11 @@ export function ReminderSettings() {
   async function refresh() {
     try {
       setStatus(await syncReminder());
-    } catch {
+    } catch (e) {
       setStatus(
-        "Reminder could not be scheduled. Retry or check Android settings.",
+        e instanceof Error
+          ? e.message
+          : "Reminder could not be scheduled. Retry or check Android settings.",
       );
     }
   }
@@ -26,8 +28,13 @@ export function ReminderSettings() {
       .then((message) => {
         if (active) setStatus(message);
       })
-      .catch(() => {
-        if (active) setStatus("Reminder could not be scheduled. Please retry.");
+      .catch((e) => {
+        if (active)
+          setStatus(
+            e instanceof Error
+              ? e.message
+              : "Reminder could not be scheduled. Please retry.",
+          );
       });
     const sub = AppState.addEventListener("change", (s) => {
       if (s === "active") void refresh();
