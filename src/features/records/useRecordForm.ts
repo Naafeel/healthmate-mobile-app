@@ -12,9 +12,13 @@ import {
   type RecordFields,
 } from "@/domain/records/validation";
 import { RecordError, recordErrorMessage } from "@/domain/records/recordErrors";
-export function useRecordForm(id?: number) {
+export function useRecordForm(
+  id?: number,
+  initialDate?: string,
+  returnToCalendar = false,
+) {
   const [fields, setFields] = useState<RecordFields>({
-    date: localDate(),
+    date: initialDate ?? localDate(),
     steps: "",
     calories: "",
     water: "",
@@ -75,7 +79,9 @@ export function useRecordForm(id?: number) {
     submitting.current = true;
     try {
       await healthRecordStore.getState().save(result.input, id);
-      router.replace("/(tabs)/records");
+      if (returnToCalendar && router.canGoBack()) router.back();
+      else if (returnToCalendar) router.replace("/calendar");
+      else router.replace("/(tabs)/records");
     } catch (e) {
       setError(recordErrorMessage(e));
       if (e instanceof RecordError && e.code === "duplicate")

@@ -92,6 +92,12 @@ export function RecordsScreen() {
             <AppHeader eyebrow="YOUR HEALTH JOURNAL" title="Records" />
             <AppText muted>Your daily summaries, saved on this device.</AppText>
             <AppButton
+              label="Calendar View"
+              icon="calendar-outline"
+              variant="secondary"
+              onPress={() => router.push("/calendar")}
+            />
+            <AppButton
               label="Add Record"
               icon="add"
               disabled={busy}

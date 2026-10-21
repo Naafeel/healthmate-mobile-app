@@ -8,8 +8,16 @@ import { DateField } from "@/components/DateField";
 import { MeasurementField } from "@/components/MeasurementField";
 import { useRecordForm } from "./useRecordForm";
 import { theme } from "@/theme/tokens";
-export function RecordFormScreen({ id }: { id?: number }) {
-  const form = useRecordForm(id);
+export function RecordFormScreen({
+  id,
+  initialDate,
+  returnToCalendar = false,
+}: {
+  id?: number;
+  initialDate?: string;
+  returnToCalendar?: boolean;
+}) {
+  const form = useRecordForm(id, initialDate, returnToCalendar);
   function back() {
     Keyboard.dismiss();
     if (router.canGoBack()) router.back();
@@ -87,7 +95,10 @@ export function RecordFormScreen({ id }: { id?: number }) {
               onPress={() =>
                 router.replace({
                   pathname: "/edit-record/[id]",
-                  params: { id: String(form.duplicateId) },
+                  params: {
+                    id: String(form.duplicateId),
+                    ...(returnToCalendar ? { returnTo: "calendar" } : {}),
+                  },
                 })
               }
             />

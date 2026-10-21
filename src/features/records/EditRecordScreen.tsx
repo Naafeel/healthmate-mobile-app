@@ -4,7 +4,10 @@ import { AppText } from "@/components/AppText";
 import { AppButton } from "@/components/AppButton";
 import { RecordFormScreen } from "./RecordFormScreen";
 export function EditRecordScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, returnTo } = useLocalSearchParams<{
+    id: string;
+    returnTo?: string;
+  }>();
   const number = Number(id);
   if (!/^\d+$/.test(id || "") || !Number.isSafeInteger(number) || number <= 0)
     return (
@@ -16,5 +19,11 @@ export function EditRecordScreen() {
         />
       </AppScreen>
     );
-  return <RecordFormScreen key={number} id={number} />;
+  return (
+    <RecordFormScreen
+      key={number}
+      id={number}
+      returnToCalendar={returnTo === "calendar"}
+    />
+  );
 }
