@@ -35,7 +35,7 @@ export function MeasurementField({
         maxLength={18}
         placeholder={optional ? "Not set" : "0"}
         placeholderTextColor={theme.colors.muted}
-        selectTextOnFocus
+        selectTextOnFocus={false}
         style={[
           styles.input,
           error ? { borderColor: theme.colors.error } : undefined,
