@@ -1,3 +1,4 @@
+import { DashboardGoalProgress } from "./DashboardGoalProgress";
 import { usePersonalization } from "@/store/personalization";
 import { QuickWater } from "./QuickWater";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
@@ -14,19 +15,12 @@ import { useDashboard } from "./useDashboard";
 import { formatDashboardDate } from "./dashboardSelectors";
 import { HealthMetricCard } from "./components/HealthMetricCard";
 import { RecentRecordPreview } from "./components/RecentRecordPreview";
-import { useHealthGoals } from "@/store/healthGoals";
 export function DashboardScreen() {
   const profile = usePersonalization((s) => s.profile);
   const layout = usePersonalization((s) => s.layout);
-  const showGoals = layout.some((w) => w.id === "goals" && w.visible);
   const theme = useTheme();
   const styles = createStyles(theme);
   const { today, summary, retry, streaks } = useDashboard();
-  const goals = useHealthGoals((s) => s.goals);
-  const goalsLoaded = useHealthGoals((s) => s.hasLoaded);
-  const goalsLoading = useHealthGoals((s) => s.loading);
-  const goalsError = useHealthGoals((s) => s.error);
-  const goalsAvailable = goalsLoaded && !goalsLoading && !goalsError;
   function viewRecords() {
     router.navigate("/(tabs)/records");
   }
@@ -113,24 +107,13 @@ export function DashboardScreen() {
                           | "water-outline"
                       }
                       tone={metric}
-                      goal={goals[metric]}
-                      goalsAvailable={!!goalsAvailable}
-                      showProgress={showGoals}
+                      showProgress={false}
                     />
                   ) : null,
                 )}
                 {w.id === "quickWater" && <QuickWater today={today} />}
                 {w.id === "goals" && (
-                  <AppButton
-                    label={
-                      goalsError
-                        ? "Retry or edit goals in Settings"
-                        : "Set or edit daily goals"
-                    }
-                    variant="secondary"
-                    icon="options-outline"
-                    onPress={() => router.navigate("/(tabs)/settings")}
-                  />
+                  <DashboardGoalProgress record={summary.today} />
                 )}
                 {w.id === "streak" && (
                   <AppCard>
