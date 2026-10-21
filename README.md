@@ -50,7 +50,7 @@ npx expo install --check
 npm test
 ```
 
-See docs/verification.md for initialization history and docs/ui-verification.md for the UI/navigation checks. A successful bundle is not proof that Android rendered the application. Run npm test for 72 validation, real desktop SQLite, state, dashboard, goals, analytics, formatting, and lifecycle tests, including all 46 prior tests. See docs/crud-verification.md, docs/dashboard-verification.md and docs/goals-insights-verification.md for separate Android checks.
+See docs/verification.md for initialization history and docs/ui-verification.md for the UI/navigation checks. A successful bundle is not proof that Android rendered the application. Run npm test for 96 validation, real desktop SQLite, state, dashboard, goals, analytics, formatting, and lifecycle tests, including all 72 tests from Prompt 05. See docs/crud-verification.md, docs/dashboard-verification.md and docs/goals-insights-verification.md for separate Android checks.
 
 ## Structure
 
@@ -105,3 +105,13 @@ Settings now saves optional positive daily targets for steps, calories burned (k
 Dashboard displays actual saved daily values alongside current goals and rounded percentages, including values above 100%; only bar fill is capped. Missing today remains unrecorded. Insights provides Monday–Sunday weeks and calendar months, metric selection, previous/next navigation, recorded-day totals/averages/count/highest, and a horizontally scrollable daily chart. Missing, saved zero and future dates remain distinct. Historical charts do not reuse today's goals.
 
 See [goals and Insights design](docs/goals-insights-design.md) and [verification with Android evidence](docs/goals-insights-verification.md). No new packages were added. Prompt 05 development uses port 8085 when earlier Metro servers occupy 8081–8084: `npx expo start --android --lan --port 8085`.
+
+## Calendar, logging streaks and CSV export
+
+Records → Calendar View opens a Monday-first monthly activity grid. Select a saved date to edit its existing record, or an empty past/current date to add through the same form with that date prefilled. Future dates explain why logging is unavailable. Back and calendar-origin Save return predictably to the existing screen.
+
+Dashboard now displays Current and Longest Logging Streak. These count consecutive dates with saved entries, including zeros; missing days break a run, while yesterday keeps the current run active until today is logged. They do not measure health or goal achievement.
+
+Settings → Data Management → Export Health Records explains the exported columns and asks you to confirm Export CSV before opening Android sharing. The UTF-8 CSV contains actual saved records, oldest first, with date, steps, calories_burned_kcal and water_ml. Cancelling is safe. HealthMate cannot confirm whether another app saves the file. Remove temporary export file deletes the app-cache copy; hour-old files are eligible for cleanup on a later launch/export.
+
+SDK-compatible expo-file-system and expo-sharing support local file creation/sharing without a backend or broad storage permissions. See [calendar, streaks and export design](docs/calendar-streaks-export-design.md) and [verification and evidence](docs/calendar-streaks-export-verification.md), including the dependency audit caveat. Schema v2 is unchanged. Prompt 06 uses `npx expo start --android --lan --port 8086` when earlier Metro ports are occupied.
