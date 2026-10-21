@@ -28,8 +28,8 @@ export function DashboardLayoutScreen() {
       />
       <AppText muted>
         Changes save on this device. Hidden measurements remain available in
-        Records, Insights, backups and CSV. Goal Progress controls the goal bars
-        on visible metric cards.
+        Records, Insights, backups and CSV. Goal Progress is a separate movable
+        section; metric cards show measurements.
       </AppText>
       {state.layout.map((w, i) => (
         <AppCard key={w.id}>

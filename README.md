@@ -120,6 +120,16 @@ SDK-compatible expo-file-system and expo-sharing support local file creation/sha
 
 Implemented: persistent Light/Dark/System appearance, opt-in local daily reminders, atomic Dashboard quick water additions, complete versioned JSON backup/restore with preview and transactional replacement, and weekly/monthly previous-period comparisons. Schema v3 adds preferences without rebuilding existing records/goals. Backups contain readable personal data and must be saved privately. Reminders are best effort and require opt-in Android permission.
 
-The shared numeric input no longer selects text automatically on focus. The affected physical phone must still be retested; emulator results do not establish every keyboard's behavior.
+The shared numeric input no longer selects text automatically on focus. The owner confirmed the released fix on their physical phone before Prompt 09. New source changes still require later physical-device regression testing.
 
 Use `npm test` for the expanded suite; original tests remain preserved. See [feature architecture](docs/feature-expansion-design.md), [verification](docs/feature-expansion-verification.md), and [release procedure](docs/android-release-build.md). The original release key is recovered; Windows packaged-app AppData redirection must not select the alternate Codex key. The release script verifies the original certificate before any native build and verifies the final APK again.
+
+## Prompt 09 source expansion (not yet released)
+
+Source now includes Achievements, advanced date/value/note/tag search, optional local My Profile, persistent Dashboard customization, Privacy & Data management, daily notes/activity tags and weekly summary sharing. Settings About retains product details without the academic attribution. Four tabs and the existing offline architecture are preserved.
+
+Runtime schema v4 is additive and preserves v1.0.1 data. Complete JSON backups now use version 2, while version 1 restores remain supported with clearly previewed defaults for new fields. CSV retains its original four numeric/date columns; notes/tags/profile are available through complete JSON instead. Water remains stored/edited in ml; profile display preferences do not change canonical measurements.
+
+`npm test` currently passes 184 tests, including all previous 142. See [Prompt 09 architecture, semantics and verification](docs/prompt09-development.md) for implementation files, migrations, privacy confirmations, backup compatibility and actual Expo Go testing limits.
+
+The app metadata remains version 1.0.1 / Android code 2. No APK was built, signed or installed during Prompt 09. The existing signed release remains unchanged and does not contain the new source features. A separate release authorization and native verification are required. Notification functionality is explicitly unavailable in an older Expo Go client lacking the required module; this does not justify rebuilding an APK during this assignment.

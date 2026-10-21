@@ -159,3 +159,7 @@ All verification was conducted interactively on the standalone release build on 
 ## Prompt 08A / v1.0.1
 
 The later signed release is version 1.0.1/code 2 with the original certificate and preserved in-place data. See [the final feature verification](feature-expansion-verification.md) for its exact checksum, native test matrix, final water-feedback fix, manifest review and limitations. The preceding sections document v1.0.0 and are retained as historical evidence.
+
+## Prompt 09 development boundary
+
+No APK/AAB was generated, signed or installed in Prompt 09, and no signing material or build scripts were changed. Version 1.0.1/code 2 remain metadata for the existing release. New source features require a separately authorized release phase and native regression testing. See prompt09-development.md; do not treat its Expo Go checks as standalone release verification.

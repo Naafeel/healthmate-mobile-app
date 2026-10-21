@@ -81,3 +81,7 @@ Persistence was verified by closing/reopening both a desktop SQLite file and the
 ## Schema v3
 
 The runtime entry point preferencesMigration.initializeDatabase calls the unchanged v1/v2 migrations when needed, then transactionally creates app_preferences and advances user_version to 3. Columns: singleton id=1, theme in light/dark/system, reminder_enabled in 0/1, integer reminder_hour 0–23, reminder_minute 0–59. No health rows or default goals are inserted. Existing record IDs survive upgrade. Backup restore changes logical data only, never migration metadata. See feature-expansion-design.md and the real SQLite upgrade, rollback and reopen tests.
+
+## Prompt 09 additive schema v4
+
+expandedMigration.ts is now the runtime entry point after opening healthmate.db. v1–v3 helpers remain unchanged. v4 adds record_annotations, record_tags, personal_profile and dashboard_layout without rebuilding existing health tables. Foreign keys are enabled on every connection; note/tag associations cascade on record deletion. Repository annotation writes, complete backup replacement and data deletion use explicit transactions under the existing operation gate. Reset keeps schema/version intact. See prompt09-development.md for schema details, backup v2/v1 compatibility and real SQLite rollback/reopen tests.

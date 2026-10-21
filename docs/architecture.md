@@ -122,3 +122,7 @@ See calendar-streaks-export-design.md for navigation/data-flow diagrams, date/st
 ## Prompt 08A integration
 
 Runtime initialization now uses additive schema v3 through preferencesMigration; original migrations v1/v2 remain unchanged. Preferences have one SQLite-backed Zustand source, read by the reactive theme hook and the serialized local reminder reconciler. Quick water is a repository-level conditional atomic increment published through the existing record store. Backup/restore shares the connection and repository-operation gate; transaction completion is followed by canonical state replacement with revision invalidation. Trends remain pure derived data with no aggregate table. See feature-expansion-design.md for the complete persistence, privacy and comparison conventions.
+
+## Prompt 09 runtime schema and feature integration
+
+Runtime initialization now advances through the unchanged historical helpers to additive schema v4 in expandedMigration.ts. Notes/tags use cascading relationships; profile/layout use validated singleton payloads. All new views remain outside routes, domain selectors are independent of React/SQLite, and the existing shared connection gate protects CRUD/restore/reset. See prompt09-development.md for the current complete source architecture and verification boundaries. No native build or version bump was performed in this phase.
