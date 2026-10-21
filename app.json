@@ -6,7 +6,7 @@
     "description": "Personal Health & Wellness Tracker — Kingston University / ESOFT coursework",
     "orientation": "default",
     "scheme": "healthmate",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "icon": "./assets/icon.png",
     "android": {
       "package": "com.naafeel.healthmate",
@@ -22,7 +22,9 @@
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.RECORD_AUDIO",
         "android.permission.SYSTEM_ALERT_WINDOW",
-        "android.permission.VIBRATE"
+        "android.permission.VIBRATE",
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.USE_EXACT_ALARM"
       ]
     },
     "plugins": [
@@ -38,7 +40,13 @@
       "expo-sqlite",
       "@react-native-community/datetimepicker",
       "expo-sharing",
-      "./plugins/withHealthMateRelease.cjs"
+      "./plugins/withHealthMateRelease.cjs",
+      [
+        "expo-notifications",
+        {
+          "enableBackgroundRemoteNotifications": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

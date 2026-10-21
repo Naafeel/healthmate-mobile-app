@@ -1,3 +1,4 @@
+import { ReminderSettings } from "./ReminderSettings";
 import { AppearanceSettings } from "./AppearanceSettings";
 import { AppScreen } from "@/components/AppScreen";
 import { AppHeader } from "@/components/AppHeader";
@@ -11,6 +12,7 @@ export function SettingsScreen() {
       <AppHeader eyebrow="MAKE IT YOURS" title="Settings" />
       <AppText muted>A thoughtful space for your health preferences.</AppText>
       <AppearanceSettings />
+      <ReminderSettings />
       <GoalSettings />
       <ExportRecordsCard />
 

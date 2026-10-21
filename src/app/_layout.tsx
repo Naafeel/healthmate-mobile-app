@@ -1,5 +1,6 @@
+import { syncReminder } from "@/data/reminders/nativeReminder";
+import { AppState, Appearance } from "react-native";
 import { usePreferences } from "@/store/preferences";
-import { Appearance } from "react-native";
 import { useEffect } from "react";
 import { healthRecordStore } from "@/store/healthRecords";
 import { healthGoalStore } from "@/store/healthGoals";
@@ -12,6 +13,9 @@ import { useTheme } from "@/theme/useTheme";
 export const unstable_settings = { anchor: "index" };
 export default function RootLayout() {
   const theme = useTheme();
+  const reminderPreferences = usePreferences(s=>s.preferences);
+  const preferencesLoaded = usePreferences(s=>s.loaded);
+  useEffect(()=>{ if(!preferencesLoaded)return;const sync=()=>{void syncReminder().catch(()=>undefined);};sync();const sub=AppState.addEventListener("change",s=>{if(s==="active")sync();});return()=>sub.remove(); },[reminderPreferences,preferencesLoaded]);
   const mode = usePreferences(s=>s.preferences.theme);
   useEffect(()=>{ Appearance.setColorScheme(mode === "system" ? "unspecified" : mode); },[mode]);
   useEffect(() => {
