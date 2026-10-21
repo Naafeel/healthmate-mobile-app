@@ -11,8 +11,14 @@ import { useDashboard } from "./useDashboard";
 import { formatDashboardDate } from "./dashboardSelectors";
 import { HealthMetricCard } from "./components/HealthMetricCard";
 import { RecentRecordPreview } from "./components/RecentRecordPreview";
+import { useHealthGoals } from "@/store/healthGoals";
 export function DashboardScreen() {
   const { today, summary, retry } = useDashboard();
+  const goals = useHealthGoals((s) => s.goals);
+  const goalsLoaded = useHealthGoals((s) => s.hasLoaded);
+  const goalsLoading = useHealthGoals((s) => s.loading);
+  const goalsError = useHealthGoals((s) => s.error);
+  const goalsAvailable = goalsLoaded && !goalsLoading && !goalsError;
   function viewRecords() {
     router.navigate("/(tabs)/records");
   }
@@ -65,6 +71,8 @@ export function DashboardScreen() {
                 unit="steps"
                 icon="footsteps-outline"
                 tone="steps"
+                goal={goals.steps}
+                goalsAvailable={!!goalsAvailable}
               />
               <HealthMetricCard
                 label="Calories burned"
@@ -72,6 +80,8 @@ export function DashboardScreen() {
                 unit="kcal"
                 icon="flame-outline"
                 tone="calories"
+                goal={goals.calories}
+                goalsAvailable={!!goalsAvailable}
               />
               <HealthMetricCard
                 label="Water intake"
@@ -79,6 +89,8 @@ export function DashboardScreen() {
                 unit="ml"
                 icon="water-outline"
                 tone="water"
+                goal={goals.water}
+                goalsAvailable={!!goalsAvailable}
               />
             </View>
           ) : (
@@ -88,6 +100,18 @@ export function DashboardScreen() {
               description="Add today's activities manually to see your steps, calories burned and water intake here."
             />
           )}
+          <AppButton
+            label={
+              goalsError
+                ? "Retry or edit goals in Settings"
+                : goalsLoading
+                  ? "Loading goals…"
+                  : "Set or edit daily goals"
+            }
+            variant="secondary"
+            icon="options-outline"
+            onPress={() => router.navigate("/(tabs)/settings")}
+          />
           <AppButton
             label={summary.action.label}
             icon={summary.action.kind === "edit" ? "create-outline" : "add"}

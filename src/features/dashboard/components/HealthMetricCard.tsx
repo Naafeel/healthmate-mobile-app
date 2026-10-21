@@ -4,22 +4,29 @@ import { AppIcon, type IconName } from "@/components/AppIcon";
 import { AppText } from "@/components/AppText";
 import { theme } from "@/theme/tokens";
 import { formatMeasurement } from "../dashboardSelectors";
+import { GoalProgressBar } from "./GoalProgressBar";
 type Props = {
   label: string;
   value: number;
   unit: string;
   icon: IconName;
   tone: "steps" | "calories" | "water";
+  goal?: number | null;
+  goalsAvailable?: boolean;
 };
-export function HealthMetricCard({ label, value, unit, icon, tone }: Props) {
+export function HealthMetricCard({
+  label,
+  value,
+  unit,
+  icon,
+  tone,
+  goal = null,
+  goalsAvailable = false,
+}: Props) {
   const color = theme.metrics[tone];
   const formatted = formatMeasurement(value);
   return (
-    <AppCard
-      accessible
-      accessibilityLabel={label + ": " + formatted + " " + unit}
-      style={styles.card}
-    >
+    <AppCard style={styles.card}>
       <View style={[styles.icon, { backgroundColor: color.background }]}>
         <AppIcon name={icon} color={color.foreground} size={theme.icon.large} />
       </View>
@@ -27,12 +34,28 @@ export function HealthMetricCard({ label, value, unit, icon, tone }: Props) {
         <AppText variant="label" muted>
           {label}
         </AppText>
-        <AppText variant="title" style={{ color: color.foreground }}>
+        <AppText
+          accessibilityLabel={label + ": " + formatted + " " + unit}
+          variant="title"
+          style={{ color: color.foreground }}
+        >
           {formatted}{" "}
           <AppText variant="body" muted>
             {unit}
           </AppText>
         </AppText>
+        {goalsAvailable ? (
+          <GoalProgressBar
+            actual={value}
+            goal={goal}
+            unit={unit}
+            color={color.foreground}
+          />
+        ) : (
+          <AppText variant="caption" muted>
+            Goal progress unavailable
+          </AppText>
+        )}
       </View>
     </AppCard>
   );

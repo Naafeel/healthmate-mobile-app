@@ -2,19 +2,13 @@ import { AppScreen } from "@/components/AppScreen";
 import { AppHeader } from "@/components/AppHeader";
 import { AppText } from "@/components/AppText";
 import { AppCard } from "@/components/AppCard";
+import { GoalSettings } from "./GoalSettings";
 export function SettingsScreen() {
   return (
-    <AppScreen>
+    <AppScreen keyboard>
       <AppHeader eyebrow="MAKE IT YOURS" title="Settings" />
       <AppText muted>A thoughtful space for your health preferences.</AppText>
-      <AppCard>
-        <AppText variant="heading" accessibilityRole="header">
-          Daily health goals
-        </AppText>
-        <AppText muted>
-          Planned · Personal goals will be introduced alongside health tracking.
-        </AppText>
-      </AppCard>
+      <GoalSettings />
       <AppCard>
         <AppText variant="heading" accessibilityRole="header">
           Application preferences

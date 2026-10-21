@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { healthRecordStore } from "@/store/healthRecords";
+import { healthGoalStore } from "@/store/healthGoals";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -9,6 +10,7 @@ export const unstable_settings = { anchor: "index" };
 export default function RootLayout() {
   useEffect(() => {
     void healthRecordStore.getState().refresh();
+    void healthGoalStore.getState().refresh();
   }, []);
   return (
     <SafeAreaProvider>

@@ -7,12 +7,14 @@ export function MeasurementField({
   onChange,
   error,
   disabled,
+  optional = false,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   error?: string;
   disabled?: boolean;
+  optional?: boolean;
 }) {
   return (
     <View style={styles.field}>
@@ -20,7 +22,10 @@ export function MeasurementField({
       <TextInput
         accessibilityLabel={label}
         accessibilityHint={
-          error || "Enter a non-negative whole number; zero is allowed."
+          error ||
+          (optional
+            ? "Enter a positive whole number, or leave blank to unset this goal."
+            : "Enter a non-negative whole number; zero is allowed.")
         }
         value={value}
         onChangeText={onChange}
@@ -28,7 +33,7 @@ export function MeasurementField({
         inputMode="numeric"
         editable={!disabled}
         maxLength={18}
-        placeholder="0"
+        placeholder={optional ? "Not set" : "0"}
         placeholderTextColor={theme.colors.muted}
         selectTextOnFocus
         style={[
