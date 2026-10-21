@@ -4,11 +4,11 @@ Personal Health & Wellness Tracker for Kingston University / ESOFT Mobile Applic
 
 ## Status
 
-Local record management completed. Implemented: the welcome/navigation foundation, validated Add/Edit daily record form, SQLite create/read/update/delete, exact-date filtering, shared Zustand state, loading/error/success states, native delete confirmation, and automated tests. Android persistence was verified after a full Expo Go restart.
+Functional daily dashboard and local record management completed. Implemented: the welcome/navigation foundation, validated Add/Edit daily record form, SQLite create/read/update/delete, exact-date filtering, shared Zustand state, loading/error/success states, native delete confirmation, an SQLite-backed daily dashboard with smart Add/Edit Today and real recent activity, and automated tests. Android persistence was verified after a full Expo Go restart.
 
 SQLite is implemented provisionally with expo-sqlite while lecturer clarification about the coursework's Flutter-specific sqflite wording is pending. Flutter remains prohibited. No cloud account or backend is used.
 
-Planned: dashboard calculations, analytics, personal goals, and later wellness features. These are not implemented.
+Planned: Insights charts, analytics, personal goals, and later wellness features. These are not implemented.
 
 ## Stack
 
@@ -50,7 +50,7 @@ npx expo install --check
 npm test
 ```
 
-See docs/verification.md for initialization history and docs/ui-verification.md for the UI/navigation checks. A successful bundle is not proof that Android rendered the application. Run npm test for 29 validation, real desktop SQLite, and state tests. See docs/crud-verification.md for the separate Android checks.
+See docs/verification.md for initialization history and docs/ui-verification.md for the UI/navigation checks. A successful bundle is not proof that Android rendered the application. Run npm test for 46 validation, real desktop SQLite, state, dashboard, formatting, and lifecycle tests. See docs/crud-verification.md and docs/dashboard-verification.md for the separate Android checks.
 
 ## Structure
 
@@ -91,3 +91,9 @@ All records are stored in healthmate.db on the device. New databases contain no 
 Use Node 24 LTS for npm test: it uses Node's test runner and built-in SQLite through a small async adapter. This proves the production SQL against real SQLite, while Android testing separately checks Expo SQLite. See [database design](docs/database-design.md) and [CRUD verification](docs/crud-verification.md).
 
 If Expo Go reports a missing native module immediately after installing dependencies, fully close and reopen the matching Expo Go client. This resolved the initial SQLite loading error on Pixel_10; no downgrade or storage substitution was used.
+
+## Functional dashboard
+
+Dashboard reads the same SQLite-backed Zustand list as Records. Today’s Overview shows the single local-date summary: saved steps, calories burned in kcal, and water in ml. Missing today is an unrecorded state; a saved 0/0/0 row displays real zeros. No activity is estimated or summed across days. Add Today opens the existing Add form; Edit Today opens the existing saved ID. Recent Activity shows up to three real dates, newest first, with View All Records navigation.
+
+Dashboard refreshes on focus, foreground return and the next local midnight, with timer/subscription cleanup. Initial loading and load failure are distinct from an empty database; Retry reuses the shared store. See [dashboard design](docs/dashboard-design.md) and [dashboard verification](docs/dashboard-verification.md). No new packages or schema migrations were needed for Prompt 04.

@@ -84,3 +84,7 @@ Captured from the Pixel 10 emulator, not generated mockups:
 ## Phase 03 follow-up
 
 The wireframes and screenshots above document the original UI foundation. Records and Add Record are now functional; see database-design.md and crud-verification.md for the current implementation and genuine CRUD screenshots. Dashboard, Insights and Settings remain shells with updated copy.
+
+## Phase 04 follow-up
+
+Dashboard now shows actual saved daily metrics and recent activity. See dashboard-design.md and dashboard-verification.md for the current data-backed screen, lifecycle behavior, test cases and genuine Android evidence. Prior skeleton screenshots remain historical coursework evidence.

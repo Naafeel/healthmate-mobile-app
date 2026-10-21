@@ -24,7 +24,7 @@ Domain models/contracts/validation, SQLite database/repository, and shared Zusta
 
 The intended dependency flow is View -> view-model hook -> repository interface -> repository implementation -> SQLite. Domain types must not import React or SQLite. Route files only compose navigation and feature screens. A feature can own local state; Zustand is reserved for shared state. No dependency injection framework or generic base repository is needed for initialization.
 
-Core records are stored locally through Expo SQLite and work without a backend. Development loads JavaScript from Metro; this does not establish a production offline launch test. Models, repository contracts, validation, migrations, CRUD, exact-date filtering, Zustand state, and automated tests are implemented. Dashboard calculations and analytics remain future work. No cloud services, authentication, Flutter, paid dependencies, or native project modifications are included.
+Core records are stored locally through Expo SQLite and work without a backend. Development loads JavaScript from Metro; this does not establish a production offline launch test. Models, repository contracts, validation, migrations, CRUD, exact-date filtering, Zustand state, and automated tests are implemented. The daily dashboard now selects exact saved totals and recent records; charts and analytics remain future work. No cloud services, authentication, Flutter, paid dependencies, or native project modifications are included.
 
 ## Implemented navigation
 
@@ -78,3 +78,29 @@ The composition module src/store/healthRecords.ts creates one repository behind 
 Records uses FlatList rather than nesting a virtualized list in AppScreen's ScrollView. Focus, foreground and pull-to-refresh reload SQLite. Exact-date filtering selects from that shared loaded list; the repository also supports parameterized date and date-range queries for tests and later consumers. Add/Edit share one form, with a separate typed edit route and ID-preserving updates. Native Alert supplies Cancel/Delete; no destructive operation runs on Cancel. Keyboard-aware scrolling and persistent taps keep actions reachable.
 
 See database-design.md and crud-verification.md for schema, bounds, testing, fixtures and actual Android evidence.
+
+## Functional daily dashboard
+
+The route still re-exports DashboardScreen. useDashboard subscribes to the canonical saved record state, local date, load/error flags and lifecycle events. dashboardSelectors derives a discriminated loading/error/ready view model, one exact-date daily row, a smart Add/Edit descriptor and a newest-first three-record preview. It creates no additional record store, SQL query path or connection.
+
+HealthMetricCard presents a saved measurement with its label, unit, accessible grouped reading and semantic accent. RecentRecordPreview provides a compact date and exact three-measurement summary. Both reuse shared UI primitives and centralized tokens.
+
+A backward-compatible hasLoaded flag in the existing store is set only by successful full loads. Dashboard shows loading until that happens, gives errors precedence over missing data, and identifies cached background refresh. Existing mutation/revision guards remain intact.
+
+createDashboardLifecycle is independently testable: navigation focus activates it, duplicate activation is ignored, foreground return rechecks the calendar and refreshes, and one timeout targets the next local midnight. Blur/background cancels it; focus/unmount removes the AppState subscription. Local calendar arithmetic supports leap days, timezone offsets and DST; no UTC slicing or minute-by-minute polling is used.
+
+~~~mermaid
+flowchart LR
+  DB[Existing healthmate.db] --> R[Existing SQLite repository]
+  R --> S[Canonical Zustand records / hasLoaded]
+  S --> VM[Dashboard selector + lifecycle hook]
+  VM --> D[Daily metrics + recent activity]
+  D -->|Missing today| A[Existing Add Record]
+  D -->|Saved today / record ID| E[Existing Edit Record]
+  D -->|View All| H[Existing Records tab]
+  A --> S
+  E --> S
+  H --> S
+~~~
+
+Full details and evidence: dashboard-design.md and dashboard-verification.md.
