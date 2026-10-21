@@ -208,7 +208,7 @@ export function RecordsScreen() {
             </AppText>
             {!!item.note && <AppText>{item.note}</AppText>}
             {!!item.tags?.length && (
-              <AppText muted>{item.tags.join(" � ")}</AppText>
+              <AppText muted>{item.tags.join(" / ")}</AppText>
             )}
             <AppButton
               label="Edit Record"

@@ -133,6 +133,7 @@ export function PrivacyScreen() {
           autoCapitalize="characters"
           autoCorrect={false}
           style={{
+            ...theme.typography.body,
             color: theme.colors.text,
             borderColor: theme.colors.border,
             borderWidth: 1,

@@ -3,7 +3,7 @@
     "name": "HealthMate",
     "slug": "healthmate-mobile-app",
     "version": "1.0.1",
-    "description": "Personal Health & Wellness Tracker — Kingston University / ESOFT coursework",
+    "description": "Personal Health & Wellness Tracker",
     "orientation": "default",
     "scheme": "healthmate",
     "userInterfaceStyle": "automatic",

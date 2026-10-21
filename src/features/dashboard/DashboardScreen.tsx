@@ -136,7 +136,7 @@ export function DashboardScreen() {
                   <AppCard>
                     <AppText variant="heading">Logging Streak</AppText>
                     <AppText>
-                      Current: {streaks?.current ?? 0} days � Longest:{" "}
+                      Current: {streaks?.current ?? 0} days / Longest:{" "}
                       {streaks?.longest ?? 0} days
                     </AppText>
                     <AppText muted>

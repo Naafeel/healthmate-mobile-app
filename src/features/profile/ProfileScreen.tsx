@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TextInput } from "react-native";
+import { TextInput, View } from "react-native";
 import { router } from "expo-router";
 import { AppScreen } from "@/components/AppScreen";
 import { AppHeader } from "@/components/AppHeader";
@@ -52,7 +52,14 @@ function ProfileForm() {
   }
   return (
     <AppScreen tab={false} keyboard>
-      <AppHeader title="My Profile" onBack={() => router.back()} />
+      <AppHeader
+        title="My Profile"
+        onBack={() =>
+          router.canGoBack()
+            ? router.back()
+            : router.replace("/(tabs)/settings")
+        }
+      />
       <AppText muted>
         Everything is optional. This is a local profile, with no account or
         medical interpretation. Your details are included in complete JSON
@@ -60,7 +67,7 @@ function ProfileForm() {
       </AppText>
       <AppCard>
         {(["name", "birthYear", "height", "weight"] as const).map((key, i) => (
-          <AppCard key={key}>
+          <View key={key} style={{ gap: theme.spacing.small }}>
             <AppText variant="label">
               {["Display name", "Birth year", "Height (cm)", "Weight (kg)"][i]}
             </AppText>
@@ -87,6 +94,7 @@ function ProfileForm() {
                 setDraft((d) => ({ ...d, [key]: value }))
               }
               style={{
+                ...theme.typography.body,
                 color: theme.colors.text,
                 borderWidth: 1,
                 borderColor: theme.colors.border,
@@ -95,7 +103,7 @@ function ProfileForm() {
                 minHeight: 52,
               }}
             />
-          </AppCard>
+          </View>
         ))}
         <AppText variant="label">Water display format</AppText>
         {(["ml", "L"] as const).map((unit) => (

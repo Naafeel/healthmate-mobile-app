@@ -18,7 +18,14 @@ export function DashboardLayoutScreen() {
   const state = usePersonalization();
   return (
     <AppScreen tab={false}>
-      <AppHeader title="Customize Dashboard" onBack={() => router.back()} />
+      <AppHeader
+        title="Customize Dashboard"
+        onBack={() =>
+          router.canGoBack()
+            ? router.back()
+            : router.replace("/(tabs)/settings")
+        }
+      />
       <AppText muted>
         Changes save on this device. Hidden measurements remain available in
         Records, Insights, backups and CSV. Goal Progress controls the goal bars

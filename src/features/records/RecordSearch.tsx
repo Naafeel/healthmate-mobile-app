@@ -5,7 +5,7 @@ import { AppButton } from "@/components/AppButton";
 import { AppText } from "@/components/AppText";
 import { DateField } from "@/components/DateField";
 import { MeasurementField } from "@/components/MeasurementField";
-import { activityTags } from "@/domain/records/annotations";
+import { ActivityTagPicker } from "@/components/ActivityTagPicker";
 import {
   emptyFilters,
   validateFilters,
@@ -69,6 +69,7 @@ export function RecordSearch({
             maxLength={500}
             onChangeText={(keyword) => setDraft((d) => ({ ...d, keyword }))}
             style={{
+              ...theme.typography.body,
               color: theme.colors.text,
               borderColor: theme.colors.border,
               borderWidth: 1,
@@ -81,22 +82,11 @@ export function RecordSearch({
             All selected tags must match. Active filters combine with the exact
             date filter above.
           </AppText>
-          {activityTags.map((tag) => (
-            <AppButton
-              key={tag}
-              label={`${draft.tags.includes(tag) ? "Selected: " : ""}${tag}`}
-              accessibilityLabel={`${tag} filter, ${draft.tags.includes(tag) ? "selected" : "not selected"}`}
-              variant="secondary"
-              onPress={() =>
-                setDraft((d) => ({
-                  ...d,
-                  tags: d.tags.includes(tag)
-                    ? d.tags.filter((t) => t !== tag)
-                    : [...d.tags, tag],
-                }))
-              }
-            />
-          ))}
+          <ActivityTagPicker
+            selected={draft.tags}
+            onChange={(tags) => setDraft((d) => ({ ...d, tags }))}
+            label="Filter by activity tags"
+          />
           {!!error && <AppText accessibilityRole="alert">{error}</AppText>}
           <AppButton
             label="Apply filters"

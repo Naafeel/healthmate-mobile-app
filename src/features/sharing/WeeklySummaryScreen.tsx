@@ -44,7 +44,14 @@ export function WeeklySummaryScreen() {
   }
   return (
     <AppScreen tab={false}>
-      <AppHeader title="Weekly Summary" onBack={() => router.back()} />
+      <AppHeader
+        title="Weekly Summary"
+        onBack={() =>
+          router.canGoBack()
+            ? router.back()
+            : router.replace("/(tabs)/insights")
+        }
+      />
       <AppButton
         label={previous ? "Show This Week" : "Show Previous Week"}
         variant="secondary"

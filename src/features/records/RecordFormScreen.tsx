@@ -1,4 +1,4 @@
-import { activityTags } from "@/domain/records/annotations";
+import { ActivityTagPicker } from "@/components/ActivityTagPicker";
 import { ActivityIndicator, Keyboard, TextInput } from "react-native";
 import { router } from "expo-router";
 import { AppScreen } from "@/components/AppScreen";
@@ -94,6 +94,7 @@ export function RecordFormScreen({
             onChangeText={form.setNote}
             editable={!form.mutating}
             style={{
+              ...theme.typography.body,
               color: theme.colors.text,
               backgroundColor: theme.colors.surface,
               borderColor: theme.colors.border,
@@ -104,21 +105,12 @@ export function RecordFormScreen({
               textAlignVertical: "top",
             }}
           />
-          <AppText variant="label">Activity tags (optional)</AppText>
-          {activityTags.map((tag) => (
-            <AppButton
-              key={tag}
-              label={`${form.tags.includes(tag) ? "Selected: " : ""}${tag}`}
-              accessibilityLabel={`${tag}, ${form.tags.includes(tag) ? "selected" : "not selected"}`}
-              variant="secondary"
-              disabled={form.mutating}
-              onPress={() =>
-                form.setTags((t) =>
-                  t.includes(tag) ? t.filter((v) => v !== tag) : [...t, tag],
-                )
-              }
-            />
-          ))}
+          <ActivityTagPicker
+            selected={form.tags}
+            onChange={form.setTags}
+            disabled={form.mutating}
+            label="Activity tags (optional)"
+          />
           {form.error && (
             <AppText
               accessibilityRole="alert"
