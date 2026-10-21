@@ -126,6 +126,8 @@ export function CalendarScreen() {
                       key={label}
                       style={{
                         flex: 1,
+                        flexBasis: 0,
+                        minWidth: theme.size.touch,
                         alignItems: "center",
                         paddingVertical: 8,
                       }}
@@ -140,7 +142,14 @@ export function CalendarScreen() {
                   {week.map((date, column) => {
                     if (!date)
                       return (
-                        <View key={`blank-${column}`} style={{ flex: 1 }} />
+                        <View
+                          key={`blank-${column}`}
+                          style={{
+                            flex: 1,
+                            flexBasis: 0,
+                            minWidth: theme.size.touch,
+                          }}
+                        />
                       );
                     const future = date > state.today,
                       saved = recorded.has(date),
@@ -155,6 +164,7 @@ export function CalendarScreen() {
                         onPress={() => setSelection(date)}
                         style={({ pressed }) => ({
                           flex: 1,
+                          flexBasis: 0,
                           minHeight: 68,
                           minWidth: 48,
                           alignItems: "center",
