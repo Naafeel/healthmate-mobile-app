@@ -1,3 +1,5 @@
+import { router } from "expo-router";
+import { AppButton } from "@/components/AppButton";
 import { BackupSettings } from "./BackupSettings";
 import { useDataMaintenance } from "@/store/dataMaintenance";
 import { ReminderSettings } from "./ReminderSettings";
@@ -14,6 +16,11 @@ export function SettingsScreen() {
     <AppScreen keyboard>
       <AppHeader eyebrow="MAKE IT YOURS" title="Settings" />
       <AppText muted>A thoughtful space for your health preferences.</AppText>
+      <AppButton
+        label="Achievements"
+        variant="secondary"
+        onPress={() => router.push("/achievements")}
+      />
       <AppearanceSettings />
       <ReminderSettings />
       <GoalSettings key={revision} />
