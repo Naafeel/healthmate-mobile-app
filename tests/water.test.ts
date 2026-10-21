@@ -1,3 +1,4 @@
+import { selectDashboard } from "../src/features/dashboard/dashboardSelectors";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { sqliteAdapter } from "./sqliteAdapter";
@@ -85,10 +86,32 @@ test("W04 store publishes saved result and safely reports database failure", asy
   });
   const store = createHealthRecordStore(repo);
   assert.equal(await store.getState().addWater("2026-10-21", 250), false);
-  assert.ok(store.getState().error);
+  assert.ok(store.getState().waterError);
 });
 test("W05 route prefill accepts only explicit supported amounts, not arrays", () => {
   for (const n of ["250", "500", "1000"]) assert.equal(waterPrefill(n), n);
   for (const n of [250, ["250"], "-1", "20001", "1e3", undefined])
     assert.equal(waterPrefill(n), "");
+});
+
+test("W06 rejected water maximum keeps dashboard ready with the saved total", async () => {
+  const a = await setup();
+  try {
+    await a.repo.createRecord({
+      date: "2026-10-21",
+      steps: 8500,
+      calories: 420,
+      water: 20000,
+    });
+    const store = createHealthRecordStore(a.repo);
+    await store.getState().refresh();
+    assert.equal(await store.getState().addWater("2026-10-21", 250), false);
+    assert.ok(store.getState().waterError);
+    assert.equal(store.getState().error, null);
+    const view = selectDashboard(store.getState(), "2026-10-21");
+    assert.equal(view.status, "ready");
+    if (view.status === "ready") assert.equal(view.today?.water, 20000);
+  } finally {
+    a.close();
+  }
 });

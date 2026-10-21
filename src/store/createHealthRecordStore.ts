@@ -15,6 +15,7 @@ export interface HealthRecordState {
   hasLoaded: boolean;
   mutating: boolean;
   error: string | null;
+  waterError: string | null;
   success: string | null;
   refresh(): Promise<void>;
   save(input: CreateHealthRecord, id?: number): Promise<HealthRecord>;
@@ -44,8 +45,9 @@ export function createHealthRecordStore(
     hasLoaded: false,
     mutating: false,
     error: null,
+    waterError: null,
     success: null,
-    clearFeedback: () => set({ error: null, success: null }),
+    clearFeedback: () => set({ error: null, waterError: null, success: null }),
     refresh: async () => {
       if (get().loading || get().mutating) return;
       const started = revision;
@@ -98,7 +100,7 @@ export function createHealthRecordStore(
       if (get().mutating) return false;
       revision++;
       let changed = false;
-      set({ mutating: true, error: null, success: null });
+      set({ mutating: true, waterError: null, success: null });
       try {
         if (!repository.incrementWater)
           throw new Error("Water update unavailable");
@@ -113,7 +115,7 @@ export function createHealthRecordStore(
         changed = true;
         return true;
       } catch (e) {
-        set({ error: recordErrorMessage(e) });
+        set({ waterError: recordErrorMessage(e) });
         return false;
       } finally {
         set({ mutating: false });

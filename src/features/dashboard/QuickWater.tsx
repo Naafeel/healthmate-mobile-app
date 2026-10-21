@@ -9,7 +9,7 @@ export function QuickWater({ today }: { today: string }) {
     s.records.find((r) => r.date === today),
   );
   const busy = useHealthRecords((s) => s.mutating),
-    error = useHealthRecords((s) => s.error),
+    error = useHealthRecords((s) => s.waterError),
     success = useHealthRecords((s) => s.success);
   return (
     <AppCard>
