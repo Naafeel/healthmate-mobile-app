@@ -13,7 +13,7 @@ import { HealthMetricCard } from "./components/HealthMetricCard";
 import { RecentRecordPreview } from "./components/RecentRecordPreview";
 import { useHealthGoals } from "@/store/healthGoals";
 export function DashboardScreen() {
-  const { today, summary, retry } = useDashboard();
+  const { today, summary, retry, streaks } = useDashboard();
   const goals = useHealthGoals((s) => s.goals);
   const goalsLoaded = useHealthGoals((s) => s.hasLoaded);
   const goalsLoading = useHealthGoals((s) => s.loading);
@@ -125,6 +125,37 @@ export function DashboardScreen() {
               else router.push("/add-record");
             }}
           />
+          <AppCard>
+            <AppText variant="heading" accessibilityRole="header">
+              Logging Streak
+            </AppText>
+            {streaks ? (
+              <>
+                <AppText>
+                  Current: {streaks.current}{" "}
+                  {streaks.current === 1 ? "day" : "days"}
+                </AppText>
+                <AppText>
+                  Longest: {streaks.longest}{" "}
+                  {streaks.longest === 1 ? "day" : "days"}
+                </AppText>
+                <AppText variant="caption" muted>
+                  Days recorded consecutively. Saved zero entries count. This
+                  measures logging, not health or goal achievement.
+                </AppText>
+                {streaks.longest === 0 && (
+                  <AppText muted>
+                    Your saved daily entries will build a logging history here.
+                  </AppText>
+                )}
+              </>
+            ) : (
+              <AppText muted>
+                Logging streaks are unavailable until valid records can be
+                loaded.
+              </AppText>
+            )}
+          </AppCard>
           <View style={styles.section}>
             <AppText variant="heading" accessibilityRole="header">
               Recent Activity
