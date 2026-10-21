@@ -93,4 +93,3 @@ After a full process stop, Expo Go reopened to welcome; Get Started loaded the f
 ![Pixel 10 06-large-text-scroll.png](evidence/dashboard/06-large-text-scroll.png)
 
 ![Pixel 10 07-after-restart.png](evidence/dashboard/07-after-restart.png)
-
