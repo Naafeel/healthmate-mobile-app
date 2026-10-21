@@ -1,3 +1,4 @@
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { router } from "expo-router";
 import { AppScreen } from "@/components/AppScreen";
 import { AppHeader } from "@/components/AppHeader";
@@ -5,46 +6,137 @@ import { AppText } from "@/components/AppText";
 import { AppCard } from "@/components/AppCard";
 import { AppButton } from "@/components/AppButton";
 import { EmptyState } from "@/components/EmptyState";
-
+import { theme } from "@/theme/tokens";
+import { useDashboard } from "./useDashboard";
+import { formatDashboardDate } from "./dashboardSelectors";
+import { HealthMetricCard } from "./components/HealthMetricCard";
+import { RecentRecordPreview } from "./components/RecentRecordPreview";
 export function DashboardScreen() {
-  const date = new Intl.DateTimeFormat(undefined, {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date());
+  const { today, summary, retry } = useDashboard();
+  function viewRecords() {
+    router.navigate("/(tabs)/records");
+  }
   return (
     <AppScreen>
-      <AppHeader eyebrow="YOUR DAILY CHECK-IN" title="Dashboard" />
-      <AppCard>
-        <AppText variant="heading">Welcome to your day</AppText>
-        <AppText muted>{date}</AppText>
-        <AppText muted>A little care. Every day.</AppText>
-        <AppButton
-          label="Add Record"
-          icon="add"
-          onPress={() => router.push("/add-record")}
-          accessibilityHint="Opens the daily health entry form"
-        />
-      </AppCard>
-      <AppText variant="heading" accessibilityRole="header">
-        Today’s overview
-      </AppText>
-      <EmptyState
-        icon="heart-outline"
-        title="Make room for your wellbeing"
-        description="Daily summary calculations are planned for the next phase. View and manage your saved daily entries in Records."
-      />
-      <AppCard>
-        <AppText variant="eyebrow" muted>
-          LOOKING AHEAD
+      <AppHeader eyebrow="HEALTHMATE" title="A little care, every day" />
+      <AppText muted>{formatDashboardDate(today)}</AppText>
+      <View style={styles.section}>
+        <AppText variant="heading" accessibilityRole="header">
+          Today’s Overview
         </AppText>
-        <AppText variant="heading">Small steps, a clearer picture</AppText>
-        <AppText muted>
-          Activity, hydration and wellbeing summaries are planned for a later
-          update.
+        <AppText variant="caption" muted>
+          Manually recorded daily totals
         </AppText>
-      </AppCard>
+      </View>
+      {summary.status === "loading" ? (
+        <AppCard>
+          <ActivityIndicator
+            accessibilityLabel="Loading your health records"
+            color={theme.colors.primary}
+          />
+          <AppText accessibilityLiveRegion="polite" muted>
+            Loading your saved activities…
+          </AppText>
+        </AppCard>
+      ) : summary.status === "error" ? (
+        <AppCard>
+          <AppText variant="heading" accessibilityRole="header">
+            Your records could not be loaded
+          </AppText>
+          <AppText accessibilityRole="alert">{summary.message}</AppText>
+          <AppButton
+            label="Retry loading dashboard"
+            icon="refresh"
+            onPress={retry}
+          />
+        </AppCard>
+      ) : (
+        <>
+          {summary.refreshing && (
+            <AppText variant="caption" accessibilityLiveRegion="polite" muted>
+              Updating saved activities…
+            </AppText>
+          )}
+          {summary.today ? (
+            <View style={styles.section}>
+              <HealthMetricCard
+                label="Steps walked"
+                value={summary.today.steps}
+                unit="steps"
+                icon="footsteps-outline"
+                tone="steps"
+              />
+              <HealthMetricCard
+                label="Calories burned"
+                value={summary.today.calories}
+                unit="kcal"
+                icon="flame-outline"
+                tone="calories"
+              />
+              <HealthMetricCard
+                label="Water intake"
+                value={summary.today.water}
+                unit="ml"
+                icon="water-outline"
+                tone="water"
+              />
+            </View>
+          ) : (
+            <EmptyState
+              icon="heart-outline"
+              title="No activity recorded today"
+              description="Add today's activities manually to see your steps, calories burned and water intake here."
+            />
+          )}
+          <AppButton
+            label={summary.action.label}
+            icon={summary.action.kind === "edit" ? "create-outline" : "add"}
+            disabled={summary.busy}
+            onPress={() => {
+              if (summary.action.kind === "edit")
+                router.push({
+                  pathname: "/edit-record/[id]",
+                  params: { id: String(summary.action.id) },
+                });
+              else router.push("/add-record");
+            }}
+          />
+          <View style={styles.section}>
+            <AppText variant="heading" accessibilityRole="header">
+              Recent Activity
+            </AppText>
+            <AppText variant="caption" muted>
+              Your three most recent recorded dates
+            </AppText>
+          </View>
+          {summary.recent.length ? (
+            <View style={styles.section}>
+              {summary.recent.map((record) => (
+                <RecentRecordPreview
+                  key={record.id}
+                  record={record}
+                  today={today}
+                />
+              ))}
+            </View>
+          ) : (
+            <AppCard>
+              <AppText variant="heading">Your journal starts here</AppText>
+              <AppText muted>
+                Saved daily records will appear here. Nothing has been recorded
+                yet.
+              </AppText>
+            </AppCard>
+          )}
+          <AppButton
+            label="View All Records"
+            variant="secondary"
+            icon="reader-outline"
+            onPress={viewRecords}
+          />
+        </>
+      )}
     </AppScreen>
   );
 }
+const styles = StyleSheet.create({ section: { gap: theme.spacing.compact } });

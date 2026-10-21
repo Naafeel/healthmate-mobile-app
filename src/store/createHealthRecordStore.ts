@@ -11,6 +11,7 @@ import {
 export interface HealthRecordState {
   records: HealthRecord[];
   loading: boolean;
+  hasLoaded: boolean;
   mutating: boolean;
   error: string | null;
   success: string | null;
@@ -26,6 +27,7 @@ export function createHealthRecordStore(repository: HealthRecordRepository) {
   return createStore<HealthRecordState>()((set, get) => ({
     records: [],
     loading: false,
+    hasLoaded: false,
     mutating: false,
     error: null,
     success: null,
@@ -36,7 +38,7 @@ export function createHealthRecordStore(repository: HealthRecordRepository) {
       set({ loading: true, error: null });
       try {
         const records = await repository.getAllRecords();
-        if (started === revision) set({ records });
+        if (started === revision) set({ records, hasLoaded: true });
       } catch (error) {
         if (started === revision) set({ error: recordErrorMessage(error) });
       } finally {

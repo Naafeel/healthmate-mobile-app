@@ -15,6 +15,11 @@ export const theme = {
     disabled: "#E3E9E6",
     disabledText: "#53665E",
   },
+  metrics: {
+    steps: { foreground: "#126B57", background: "#E2F2EB" },
+    calories: { foreground: "#9C431B", background: "#FFF0E6" },
+    water: { foreground: "#185E91", background: "#E8F2FA" },
+  },
   typography: {
     hero: { fontSize: 38, lineHeight: 46, fontWeight: "700" },
     title: { fontSize: 30, lineHeight: 38, fontWeight: "700" },
