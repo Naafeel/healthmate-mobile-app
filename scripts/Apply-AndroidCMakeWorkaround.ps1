@@ -3,7 +3,13 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 
+function Assert-HealthMateBuildPath($path) {
+    $resolved = [IO.Path]::GetFullPath($path).TrimEnd('\')
+    $modules = [IO.Path]::GetFullPath((Join-Path $Root 'node_modules')).TrimEnd('\')
+    if (!$resolved.StartsWith($modules + '\',[StringComparison]::OrdinalIgnoreCase) -and $resolved -ne 'C:\HM\b\a') { throw 'Refusing cleanup outside HealthMate native build paths.' }
+}
 function Sync-DirectoryContents($src, $dest) {
+    Assert-HealthMateBuildPath $dest
     if (Test-Path $src) {
         if (Test-Path $dest) { Remove-Item -Path $dest -Recurse -Force }
         New-Item -ItemType Directory -Path $dest -Force | Out-Null
@@ -252,8 +258,9 @@ if (Test-Path $sqliteDir) {
 }
 
 # Clean existing .cxx folders
-Get-ChildItem -Path (Join-Path $Root 'node_modules') -Filter ".cxx" -Recurse -Directory -Hidden -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item -Path "C:\HM\b\a" -Recurse -Force -ErrorAction SilentlyContinue
+Get-ChildItem -Path (Join-Path $Root 'node_modules') -Filter ".cxx" -Recurse -Directory -Hidden -ErrorAction SilentlyContinue | ForEach-Object { Assert-HealthMateBuildPath $_.FullName; Remove-Item -LiteralPath $_.FullName -Recurse -Force -ErrorAction SilentlyContinue }
+Assert-HealthMateBuildPath "C:\HM\b\a"
+Remove-Item -LiteralPath "C:\HM\b\a" -Recurse -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Path "C:\HM\b\a" -Force | Out-Null
 
 Write-Host "Android CMake workarounds applied successfully."
