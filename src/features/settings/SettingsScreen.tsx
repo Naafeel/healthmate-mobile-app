@@ -3,12 +3,14 @@ import { AppHeader } from "@/components/AppHeader";
 import { AppText } from "@/components/AppText";
 import { AppCard } from "@/components/AppCard";
 import { GoalSettings } from "./GoalSettings";
+import { ExportRecordsCard } from "@/features/export/ExportRecordsCard";
 export function SettingsScreen() {
   return (
     <AppScreen keyboard>
       <AppHeader eyebrow="MAKE IT YOURS" title="Settings" />
       <AppText muted>A thoughtful space for your health preferences.</AppText>
       <GoalSettings />
+      <ExportRecordsCard />
       <AppCard>
         <AppText variant="heading" accessibilityRole="header">
           Application preferences
