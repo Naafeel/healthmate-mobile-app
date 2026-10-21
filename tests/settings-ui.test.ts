@@ -10,12 +10,12 @@ test("Settings About retains product information without academic attribution", 
   for (const text of [
     "ABOUT HEALTHMATE",
     "Personal Health & Wellness Tracker",
-    "Version 1.0.1",
+    "Version 1.1.0",
   ])
     assert.ok(source.includes(text));
   const config = JSON.parse(readFileSync("app.json", "utf8")).expo;
   assert.doesNotMatch(config.description, /Kingston|ESOFT|coursework/i);
-  assert.equal(config.version, "1.0.1");
-  assert.equal(config.android.versionCode, 2);
+  assert.equal(config.version, "1.1.0");
+  assert.equal(config.android.versionCode, 3);
   assert.equal(config.android.package, "com.naafeel.healthmate");
 });

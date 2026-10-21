@@ -45,7 +45,7 @@ export function SettingsScreen() {
         <AppText variant="heading">A little care. Every day.</AppText>
         <AppText muted>Personal Health & Wellness Tracker</AppText>
         <AppText variant="caption" muted>
-          Version 1.0.1 · Local record management{"\n"}Health records are saved
+          Version 1.1.0 · Local record management{"\n"}Health records are saved
           on this device. No cloud account or synchronization is used.
         </AppText>
       </AppCard>
