@@ -1,3 +1,4 @@
+import { QuickWater } from "./QuickWater";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { router } from "expo-router";
 import { AppScreen } from "@/components/AppScreen";
@@ -103,6 +104,7 @@ export function DashboardScreen() {
               description="Add today's activities manually to see your steps, calories burned and water intake here."
             />
           )}
+          <QuickWater today={today} />
           <AppButton
             label={
               goalsError

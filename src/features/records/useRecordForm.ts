@@ -16,12 +16,13 @@ export function useRecordForm(
   id?: number,
   initialDate?: string,
   returnToCalendar = false,
+  initialWater = "",
 ) {
   const [fields, setFields] = useState<RecordFields>({
     date: initialDate ?? localDate(),
     steps: "",
     calories: "",
-    water: "",
+    water: initialWater,
   });
   const [errors, setErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(id !== undefined);

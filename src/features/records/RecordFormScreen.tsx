@@ -11,14 +11,16 @@ import { useTheme } from "@/theme/useTheme";
 export function RecordFormScreen({
   id,
   initialDate,
+  initialWater,
   returnToCalendar = false,
 }: {
   id?: number;
   initialDate?: string;
+  initialWater?: string;
   returnToCalendar?: boolean;
 }) {
   const theme = useTheme();
-  const form = useRecordForm(id, initialDate, returnToCalendar);
+  const form = useRecordForm(id, initialDate, returnToCalendar, initialWater);
   function back() {
     Keyboard.dismiss();
     if (router.canGoBack()) router.back();

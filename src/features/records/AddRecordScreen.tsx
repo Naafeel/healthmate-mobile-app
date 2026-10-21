@@ -1,3 +1,4 @@
+import { waterPrefill } from "@/domain/records/quickWater";
 import { RecordFormScreen } from "./RecordFormScreen";
 import { router, useLocalSearchParams } from "expo-router";
 import { resolveAddDate } from "@/domain/calendar/dates";
@@ -8,6 +9,7 @@ import { AppButton } from "@/components/AppButton";
 export function AddRecordScreen() {
   const params = useLocalSearchParams<{
     date?: string | string[];
+    water?: string | string[];
     returnTo?: string | string[];
   }>();
   const date = resolveAddDate(params.date, localDate());
@@ -31,6 +33,7 @@ export function AddRecordScreen() {
     <RecordFormScreen
       key={date}
       initialDate={date}
+      initialWater={waterPrefill(params.water)}
       returnToCalendar={params.returnTo === "calendar"}
     />
   );

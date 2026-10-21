@@ -75,6 +75,15 @@ export class SQLiteHealthRecordRepository implements HealthRecordRepository {
       return { id, ...input };
     });
   }
+  incrementWater(date:string, amount:number) {
+    this.date(date);
+    if(![250,500,1000].includes(amount)) throw new RecordError('validation','Choose 250, 500 or 1000 ml.');
+    return this.safely(async db=>{
+      const row=await db.getFirstAsync<HealthRecord>('UPDATE health_records SET water=water+? WHERE date=? AND water<=? RETURNING id,date,steps,calories,water',amount,date,20000-amount);
+      if(!row)throw new RecordError('validation','Water was not added. The daily record may be missing, or this amount would exceed 20,000 ml. Refresh and check the record.');
+      return row;
+    });
+  }
   getAllRecords() {
     return this.safely((db) =>
       db.getAllAsync<HealthRecord>(
