@@ -54,3 +54,21 @@ APK and keystore binaries are ignored and remain outside source control. The fin
 The first build downloaded Gradle 9.4.1 and installed the licensed NDK through Android Gradle tooling. The first attempt stopped just as NDK installation completed; the subsequent build reused that installation. No unrelated software or global Java settings were changed. Existing HealthMate Metro processes were stopped after checking their repository-specific command lines to make standalone verification meaningful.
 
 SDK-generated warnings reference `android.builtInKotlin=false`, `android.newDsl=false`, legacy variant APIs and a Kotlin catalog/plugin version difference. These are upstream compatibility warnings, not justification to independently upgrade AGP or Kotlin. Build outcome and any actual blockers are documented separately.
+
+## Version 1.0.1 and Windows signing namespace
+
+Version 1.0.1 uses code 2 and the same package and original signer. The usual LocalAppData signing path is redirected inside the packaged Codex process; simply spelling the same absolute path does not select the physical original key. The verified original key exists in ordinary Windows LocalAppData and the DPAPI password is usable from an ordinary Windows process. Do not regenerate either identity.
+
+Run the following in an ordinary **PowerShell 7 window opened from Windows**, outside Codex's packaged process:
+
+```powershell
+Set-Location 'C:\Users\Naafeel\Downloads\Mobile App Development\Health Mate App\healthmate-mobile-app'
+.\scripts\Build-AndroidRelease.ps1 `
+  -JavaHome 'C:\Program Files\Eclipse Adoptium\jdk-25.0.4.101-hotspot' `
+  -AndroidHome 'C:\Users\Naafeel\AppData\Local\Android\Sdk' `
+  -SigningDirectory 'C:\Users\Naafeel\AppData\Local\HealthMate\signing'
+```
+
+The script verifies original certificate SHA-256 `82a0a426d562ff060fad55fcd6a97954ab845c270723915f43dfe90e50bcda5d` before prebuild. Missing/mismatched credentials stop immediately. The SDK apksigner result must match again after assembly, before any installation. No password is passed as a literal command argument. This milestone also generates codegen artifacts before applying the existing CMake workaround so a clean npm installation does not require previously generated codegen files. Cleanup destinations are checked against the project's node_modules or the known C:/HM/b/a staging path.
+
+For this machine's automated run, a non-packaged process was started through Windows process management with the same explicit paths. The key was first verified independently through that context. This avoided changing or copying signing credentials. APK installation must use `adb install -r` and never uninstall/clear data to work around a signature mismatch.

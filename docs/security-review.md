@@ -24,3 +24,11 @@ The audit's suggested Expo 44 / React Native 0.72 / expo-sharing 14 downgrades d
 - Generated native files, APKs, keystores and local signing material are ignored by Git. Verify staged paths before each commit.
 
 Final APK manifest, signing and runtime checks are recorded in [production verification](production-verification.md). Native offline tests cannot establish the absence of every vulnerability; these advisory limitations remain open for upstream fixes.
+
+## Prompt 08A dependency and permission review
+
+The new SDK-resolved packages are expo-notifications 58.1.5 and expo-document-picker 58.0.4. The audit after installation still reports 29 affected packages (9 moderate, 20 high), driven by the same braces, node-forge and uuid advisories described above. No audit-force fix or SDK downgrade was applied. No new advisory root was added by these features.
+
+The notification feature uses local scheduling only, with no push token registration, server or health values in notification content. Android POST_NOTIFICATIONS is requested only after opt-in. SCHEDULE_EXACT_ALARM and USE_EXACT_ALARM are blocked; normal best-effort delivery is intentional. Broad storage permissions remain blocked. Backup selection uses the document picker, and sharing grants access to the selected file. Plain JSON backups are explicitly disclosed as readable personal data, not encrypted storage.
+
+The original signing key was found intact outside Codex's redirected AppData namespace. A normal Windows process authenticated its DPAPI-protected password and verified certificate 82a0a426d562ff060fad55fcd6a97954ab845c270723915f43dfe90e50bcda5d. The alternative key inside the Codex package cache remains untouched. The release script now fails before prebuild if the expected original certificate is absent and verifies the APK certificate after assembly. Private keys/passwords were not copied into project source, logs or Git.

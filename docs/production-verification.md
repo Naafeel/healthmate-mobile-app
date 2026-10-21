@@ -155,3 +155,7 @@ All verification was conducted interactively on the standalone release build on 
 | `docs/evidence/release/09-export.png` | Native Android share sheet with generated CSV |
 | `docs/evidence/release/10-persistence-relaunch.png` | Cold relaunch verifying complete SQLite persistence |
 | `docs/evidence/release/11-accessibility-largefont.png` | Large font scaling (1.3x) layout verification |
+
+## Prompt 08A / v1.0.1
+
+The later signed release is version 1.0.1/code 2 with the original certificate and preserved in-place data. See [the final feature verification](feature-expansion-verification.md) for its exact checksum, native test matrix, final water-feedback fix, manifest review and limitations. The preceding sections document v1.0.0 and are retained as historical evidence.

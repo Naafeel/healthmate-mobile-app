@@ -8,7 +8,7 @@ Functional daily dashboard and local record management completed. Implemented: t
 
 SQLite is implemented provisionally with expo-sqlite while lecturer clarification about the coursework's Flutter-specific sqflite wording is pending. Flutter remains prohibited. No cloud account or backend is used.
 
-Implemented in Prompt 05: persistent optional daily goals, Dashboard progress, and weekly/monthly Insights for saved activity. Later wellness features remain planned.
+Implemented in Prompt 05: persistent optional daily goals, Dashboard progress, and weekly/monthly Insights for saved activity. Prompt 08A adds the appearance, local reminder, quick-water, backup/restore and comparison features described below.
 
 ## Stack
 
@@ -20,7 +20,7 @@ React Native with Expo SDK 58, React 19, TypeScript strict mode, Expo Router, an
 - Git.
 - Android Studio with an Android SDK, platform-tools, and a configured emulator; or an Android device with a compatible Expo Go client.
 - SDK 58 is in an Expo Go transition period as of 20 October 2026. Use the matching Android client from https://expo.dev/go rather than assuming the Play Store client supports SDK 58.
-- Java is not needed to run JavaScript in Expo Go. Native compilation, if introduced later, requires the JDK supported by that SDK's Android build toolchain; the locally installed JDK 25 has not been validated for native builds.
+- Native release compilation is validated with Temurin JDK 25.0.4.1, Gradle 9.4.1 and AGP 9.2.1. Use the documented original signing identity and Windows build workflow; do not regenerate keys.
 
 Official setup: https://docs.expo.dev/get-started/create-a-project/ and https://docs.expo.dev/workflow/android-studio-emulator/.
 
@@ -50,7 +50,7 @@ npx expo install --check
 npm test
 ```
 
-See docs/verification.md for initialization history and docs/ui-verification.md for the UI/navigation checks. A successful bundle is not proof that Android rendered the application. Run npm test for 96 validation, real desktop SQLite, state, dashboard, goals, analytics, formatting, and lifecycle tests, including all 72 tests from Prompt 05. See docs/crud-verification.md, docs/dashboard-verification.md and docs/goals-insights-verification.md for separate Android checks.
+See docs/verification.md for initialization history and docs/ui-verification.md for the UI/navigation checks. A successful bundle is not proof that Android rendered the application. Run npm test for 142 validation, real desktop SQLite, state, lifecycle, settings, backup, water, reminder and analytics tests, including all previous 101 tests. See docs/crud-verification.md, docs/dashboard-verification.md and docs/goals-insights-verification.md for separate Android checks.
 
 ## Structure
 
@@ -115,3 +115,11 @@ Dashboard now displays Current and Longest Logging Streak. These count consecuti
 Settings → Data Management → Export Health Records explains the exported columns and asks you to confirm Export CSV before opening Android sharing. The UTF-8 CSV contains actual saved records, oldest first, with date, steps, calories_burned_kcal and water_ml. Cancelling is safe. HealthMate cannot confirm whether another app saves the file. Remove temporary export file deletes the app-cache copy; hour-old files are eligible for cleanup on a later launch/export.
 
 SDK-compatible expo-file-system and expo-sharing support local file creation/sharing without a backend or broad storage permissions. See [calendar, streaks and export design](docs/calendar-streaks-export-design.md) and [verification and evidence](docs/calendar-streaks-export-verification.md), including the dependency audit caveat. Schema v2 is unchanged. Prompt 06 uses `npx expo start --android --lan --port 8086` when earlier Metro ports are occupied.
+
+## Version 1.0.1 feature expansion
+
+Implemented: persistent Light/Dark/System appearance, opt-in local daily reminders, atomic Dashboard quick water additions, complete versioned JSON backup/restore with preview and transactional replacement, and weekly/monthly previous-period comparisons. Schema v3 adds preferences without rebuilding existing records/goals. Backups contain readable personal data and must be saved privately. Reminders are best effort and require opt-in Android permission.
+
+The shared numeric input no longer selects text automatically on focus. The affected physical phone must still be retested; emulator results do not establish every keyboard's behavior.
+
+Use `npm test` for the expanded suite; original tests remain preserved. See [feature architecture](docs/feature-expansion-design.md), [verification](docs/feature-expansion-verification.md), and [release procedure](docs/android-release-build.md). The original release key is recovered; Windows packaged-app AppData redirection must not select the alternate Codex key. The release script verifies the original certificate before any native build and verifies the final APK again.

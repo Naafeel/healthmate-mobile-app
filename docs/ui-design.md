@@ -88,3 +88,7 @@ The wireframes and screenshots above document the original UI foundation. Record
 ## Phase 04 follow-up
 
 Dashboard now shows actual saved daily metrics and recent activity. See dashboard-design.md and dashboard-verification.md for the current data-backed screen, lifecycle behavior, test cases and genuine Android evidence. Prior skeleton screenshots remain historical coursework evidence.
+
+## Prompt 08A UI integration
+
+All existing and new screens resolve the same light/dark semantic palette through useTheme. Settings groups Appearance, Daily Reminder, goals, CSV and Backup & Restore in scrollable cards. Dashboard adds three water actions; Insights adds comparison totals, directions, percentages and recorded-day coverage alongside the original chart. Backup preview and replacement confirmation are distinct steps. Existing tabs and native Back paths remain unchanged. No extra tab or unrelated redesign was introduced. Native checks and screenshots are recorded separately in feature-expansion-verification.md.

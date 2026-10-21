@@ -69,3 +69,11 @@ HealthMate is designed following mobile-first accessibility standards, adhering 
 - **Focus Management**:
   - Moving between form inputs follows logical vertical order (Steps -> Calories -> Water -> Save).
   - Android Back key consistently navigates back to previous screens or dismisses dialogs without trapped focus.
+
+## Prompt 08A accessibility review
+
+Executed source/contrast review plus native screenshots on Pixel_10. Both palettes have automated AA contrast checks for ordinary text, muted/error text, primary button labels, disabled labels and semantic metric foreground/background pairs. Shared numeric inputs now leave native selection under user control and theme cursor/selection colors. New reminder, water, backup and comparison controls reuse the existing minimum 48-dp target system; chart days have textual equivalents and calendar labels identify date/saved/missing/future state. Trend direction and percentage explanations use words, not color alone.
+
+Native checks: normal text, 130% dark Settings and Calendar, 150% dark welcome, and approximately 320-dp effective portrait width at normal text. Calendar retains equal weekday columns and minimum touch targets through horizontal scrolling. These samples do not establish that every possible screen/font/device combination passes. Android font/density changes may return to welcome/launcher and were followed by explicit reopening.
+
+TalkBack is available on the emulator, but complete spoken reading-order and gesture testing was not performed. Physical keyboard/IME behavior and a full TalkBack pass remain student/manual verification. No full accessibility-conformance claim is made. See feature-expansion-verification.md for exact native input cases, screenshots, limitations and restored settings.

@@ -77,3 +77,7 @@ Persistence was verified by closing/reopening both a desktop SQLite file and the
 - [Expo SDK 58 SQLite](https://docs.expo.dev/versions/v58.0.0/sdk/sqlite/) — asynchronous database API and persisted device storage.
 - [Expo SDK 58 date picker](https://docs.expo.dev/versions/v58.0.0/sdk/date-time-picker/) — SDK-compatible native calendar component.
 - [Zustand source and documentation](https://github.com/pmndrs/zustand) — lightweight shared state.
+
+## Schema v3
+
+The runtime entry point preferencesMigration.initializeDatabase calls the unchanged v1/v2 migrations when needed, then transactionally creates app_preferences and advances user_version to 3. Columns: singleton id=1, theme in light/dark/system, reminder_enabled in 0/1, integer reminder_hour 0–23, reminder_minute 0–59. No health rows or default goals are inserted. Existing record IDs survive upgrade. Backup restore changes logical data only, never migration metadata. See feature-expansion-design.md and the real SQLite upgrade, rollback and reopen tests.
