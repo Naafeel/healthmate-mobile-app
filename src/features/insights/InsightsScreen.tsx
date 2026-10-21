@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { TrendComparison } from "./TrendComparison";
 import { useMemo, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
@@ -58,6 +59,11 @@ export function InsightsScreen() {
     <AppScreen>
       <AppHeader eyebrow="SEE THE BIGGER PICTURE" title="Insights" />
       <AppText muted>Your saved activity, one calendar day at a time.</AppText>
+      <AppButton
+        label="Share weekly summary"
+        variant="secondary"
+        onPress={() => router.push("/weekly-summary")}
+      />
       <SelectionControl
         label="Period"
         value={mode}
