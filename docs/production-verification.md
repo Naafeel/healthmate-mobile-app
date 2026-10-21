@@ -163,3 +163,8 @@ The later signed release is version 1.0.1/code 2 with the original certificate a
 ## Prompt 09 development boundary
 
 No APK/AAB was generated, signed or installed in Prompt 09, and no signing material or build scripts were changed. Version 1.0.1/code 2 remain metadata for the existing release. New source features require a separately authorized release phase and native regression testing. See prompt09-development.md; do not treat its Expo Go checks as standalone release verification.
+
+## Prompt 10 / v1.1.0 Release
+
+HealthMate version 1.1.0 (versionCode 3) signed release APK was compiled, verified, and installed. It retains the original signing certificate (`82a0a426d562ff060fad55fcd6a97954ab845c270723915f43dfe90e50bcda5d`), upgrades database schema from v3 to v4, preserves pre-existing user data, and supports format-v2 JSON backups alongside backwards-compatible v1 legacy imports. See [Prompt 10 release verification](prompt10-release-verification.md) for full APK metadata, checksums, QA isolation results, and verification matrices.
+
