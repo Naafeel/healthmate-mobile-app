@@ -3,16 +3,17 @@ import { AppScreen } from "@/components/AppScreen";
 import { AppText } from "@/components/AppText";
 import { AppButton } from "@/components/AppButton";
 import { RecordFormScreen } from "./RecordFormScreen";
+import { recordRouteId } from "@/domain/records/recordRoute";
 export function EditRecordScreen() {
   const { id, returnTo } = useLocalSearchParams<{
-    id: string;
-    returnTo?: string;
+    id: string | string[];
+    returnTo?: string | string[];
   }>();
-  const number = Number(id);
-  if (!/^\d+$/.test(id || "") || !Number.isSafeInteger(number) || number <= 0)
+  const number = recordRouteId(id);
+  if (number === null)
     return (
       <AppScreen tab={false}>
-        <AppText>This record link is invalid.</AppText>
+        <AppText accessibilityRole="alert">This record link is invalid.</AppText>
         <AppButton
           label="Return to Records"
           onPress={() => router.replace("/(tabs)/records")}

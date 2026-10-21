@@ -34,11 +34,13 @@
   },
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
+    "android": "expo start --android --lan",
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tests/tsconfig.json",
-    "test": "node --import tsx --test tests/*.test.ts"
+    "test": "node --import tsx --test tests/*.test.ts",
+    "android:native": "expo run:android",
+    "android:release": "pwsh -NoProfile -File scripts/Build-AndroidRelease.ps1"
   },
   "private": true,
   "description": "HealthMate — Personal Health & Wellness Tracker coursework",
