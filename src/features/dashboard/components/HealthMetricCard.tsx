@@ -16,6 +16,7 @@ type Props = {
   tone: "steps" | "calories" | "water";
   goal?: number | null;
   goalsAvailable?: boolean;
+  showProgress?: boolean;
 };
 export function HealthMetricCard({
   label,
@@ -25,6 +26,7 @@ export function HealthMetricCard({
   tone,
   goal = null,
   goalsAvailable = false,
+  showProgress = true,
 }: Props) {
   const theme = useTheme();
   const styles = createStyles(theme);
@@ -50,7 +52,7 @@ export function HealthMetricCard({
         >
           {formatted}
         </AppText>
-        {goalsAvailable ? (
+        {!showProgress ? null : goalsAvailable ? (
           <GoalProgressBar
             actual={value}
             goal={goal}

@@ -26,6 +26,11 @@ export function SettingsScreen() {
         variant="secondary"
         onPress={() => router.push("/profile")}
       />
+      <AppButton
+        label="Customize Dashboard"
+        variant="secondary"
+        onPress={() => router.push("/dashboard-layout")}
+      />
       <AppearanceSettings />
       <ReminderSettings />
       <GoalSettings key={revision} />

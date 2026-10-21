@@ -11,7 +11,6 @@ import { emptyProfile, validateProfile } from "@/domain/profile/profile";
 import { useTheme } from "@/theme/useTheme";
 import { useDataMaintenance } from "@/store/dataMaintenance";
 export function ProfileScreen() {
-  const profile = usePersonalization((s) => s.profile);
   const revision = useDataMaintenance((s) => s.revision);
   const loaded = usePersonalization((s) => s.loaded);
   return <ProfileForm key={String(revision) + loaded} />;

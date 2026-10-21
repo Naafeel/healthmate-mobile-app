@@ -17,6 +17,8 @@ import { RecentRecordPreview } from "./components/RecentRecordPreview";
 import { useHealthGoals } from "@/store/healthGoals";
 export function DashboardScreen() {
   const profile = usePersonalization((s) => s.profile);
+  const layout = usePersonalization((s) => s.layout);
+  const showGoals = layout.some((w) => w.id === "goals" && w.visible);
   const theme = useTheme();
   const styles = createStyles(theme);
   const { today, summary, retry, streaks } = useDashboard();
@@ -72,56 +74,79 @@ export function DashboardScreen() {
               Updating saved activities…
             </AppText>
           )}
-          {summary.today ? (
-            <View style={styles.section}>
-              <HealthMetricCard
-                label="Steps walked"
-                value={summary.today.steps}
-                unit="steps"
-                icon="footsteps-outline"
-                tone="steps"
-                goal={goals.steps}
-                goalsAvailable={!!goalsAvailable}
-              />
-              <HealthMetricCard
-                label="Calories burned"
-                value={summary.today.calories}
-                unit="kcal"
-                icon="flame-outline"
-                tone="calories"
-                goal={goals.calories}
-                goalsAvailable={!!goalsAvailable}
-              />
-              <HealthMetricCard
-                label="Water intake"
-                value={summary.today.water}
-                unit="ml"
-                icon="water-outline"
-                tone="water"
-                goal={goals.water}
-                goalsAvailable={!!goalsAvailable}
-              />
-            </View>
-          ) : (
+          {!summary.today && (
             <EmptyState
               icon="heart-outline"
               title="No activity recorded today"
-              description="Add today's activities manually to see your steps, calories burned and water intake here."
+              description="Add today's activities manually to see your saved measurements."
             />
           )}
-          <QuickWater today={today} />
-          <AppButton
-            label={
-              goalsError
-                ? "Retry or edit goals in Settings"
-                : goalsLoading
-                  ? "Loading goals…"
-                  : "Set or edit daily goals"
-            }
-            variant="secondary"
-            icon="options-outline"
-            onPress={() => router.navigate("/(tabs)/settings")}
-          />
+          {layout
+            .filter((w) => w.visible)
+            .map((w) => (
+              <View key={w.id}>
+                {(["steps", "calories", "water"] as const).map((metric) =>
+                  w.id === metric && summary.today ? (
+                    <HealthMetricCard
+                      key={metric}
+                      label={
+                        {
+                          steps: "Steps walked",
+                          calories: "Calories burned",
+                          water: "Water intake",
+                        }[metric]
+                      }
+                      value={summary.today[metric]}
+                      unit={
+                        { steps: "steps", calories: "kcal", water: "ml" }[
+                          metric
+                        ]
+                      }
+                      icon={
+                        {
+                          steps: "footsteps-outline",
+                          calories: "flame-outline",
+                          water: "water-outline",
+                        }[metric] as
+                          | "footsteps-outline"
+                          | "flame-outline"
+                          | "water-outline"
+                      }
+                      tone={metric}
+                      goal={goals[metric]}
+                      goalsAvailable={!!goalsAvailable}
+                      showProgress={showGoals}
+                    />
+                  ) : null,
+                )}
+                {w.id === "quickWater" && <QuickWater today={today} />}
+                {w.id === "goals" && (
+                  <AppButton
+                    label={
+                      goalsError
+                        ? "Retry or edit goals in Settings"
+                        : "Set or edit daily goals"
+                    }
+                    variant="secondary"
+                    icon="options-outline"
+                    onPress={() => router.navigate("/(tabs)/settings")}
+                  />
+                )}
+                {w.id === "streak" && (
+                  <AppCard>
+                    <AppText variant="heading">Logging Streak</AppText>
+                    <AppText>
+                      Current: {streaks?.current ?? 0} days � Longest:{" "}
+                      {streaks?.longest ?? 0} days
+                    </AppText>
+                    <AppText muted>
+                      Consecutive saved dates, including zeros. This measures
+                      logging, not health or goal achievement.
+                    </AppText>
+                  </AppCard>
+                )}
+              </View>
+            ))}
           <AppButton
             label={summary.action.label}
             icon={summary.action.kind === "edit" ? "create-outline" : "add"}
@@ -135,37 +160,6 @@ export function DashboardScreen() {
               else router.push("/add-record");
             }}
           />
-          <AppCard>
-            <AppText variant="heading" accessibilityRole="header">
-              Logging Streak
-            </AppText>
-            {streaks ? (
-              <>
-                <AppText>
-                  Current: {streaks.current}{" "}
-                  {streaks.current === 1 ? "day" : "days"}
-                </AppText>
-                <AppText>
-                  Longest: {streaks.longest}{" "}
-                  {streaks.longest === 1 ? "day" : "days"}
-                </AppText>
-                <AppText variant="caption" muted>
-                  Days recorded consecutively. Saved zero entries count. This
-                  measures logging, not health or goal achievement.
-                </AppText>
-                {streaks.longest === 0 && (
-                  <AppText muted>
-                    Your saved daily entries will build a logging history here.
-                  </AppText>
-                )}
-              </>
-            ) : (
-              <AppText muted>
-                Logging streaks are unavailable until valid records can be
-                loaded.
-              </AppText>
-            )}
-          </AppCard>
           <View style={styles.section}>
             <AppText variant="heading" accessibilityRole="header">
               Recent Activity
