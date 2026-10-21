@@ -36,13 +36,14 @@ export function AppScreen({
     </SafeAreaView>
   );
 }
-const createStyles = (theme: Theme) => StyleSheet.create({
-  screen: { flex: 1, backgroundColor: theme.colors.background },
-  scroll: { flexGrow: 1, alignItems: "center" },
-  content: {
-    width: "100%",
-    maxWidth: theme.size.content,
-    padding: theme.spacing.large,
-    gap: theme.spacing.large,
-  },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    screen: { flex: 1, backgroundColor: theme.colors.background },
+    scroll: { flexGrow: 1, alignItems: "center" },
+    content: {
+      width: "100%",
+      maxWidth: theme.size.content,
+      padding: theme.spacing.large,
+      gap: theme.spacing.large,
+    },
+  });

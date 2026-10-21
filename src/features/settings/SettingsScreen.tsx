@@ -9,7 +9,7 @@ import { AppCard } from "@/components/AppCard";
 import { GoalSettings } from "./GoalSettings";
 import { ExportRecordsCard } from "@/features/export/ExportRecordsCard";
 export function SettingsScreen() {
-  const revision=useDataMaintenance(s=>s.revision);
+  const revision = useDataMaintenance((s) => s.revision);
   return (
     <AppScreen keyboard>
       <AppHeader eyebrow="MAKE IT YOURS" title="Settings" />
@@ -31,7 +31,7 @@ export function SettingsScreen() {
           coursework
         </AppText>
         <AppText variant="caption" muted>
-          Version 1.0.0 · Local record management{"\n"}Health records are saved
+          Version 1.0.1 · Local record management{"\n"}Health records are saved
           on this device. No cloud account or synchronization is used.
         </AppText>
       </AppCard>

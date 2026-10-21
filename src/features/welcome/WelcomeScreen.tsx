@@ -40,58 +40,59 @@ export function WelcomeScreen() {
   );
 }
 
-const createStyles = (theme: Theme) => StyleSheet.create({
-  action: { alignSelf: "stretch", marginTop: theme.spacing.large },
-  screen: { flex: 1, backgroundColor: theme.colors.background },
-  content: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: theme.spacing.large,
-  },
-  card: {
-    width: "100%",
-    maxWidth: theme.size.welcome,
-    alignItems: "center",
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.radius.card,
-    borderWidth: theme.border.width,
-    borderColor: theme.colors.border,
-    paddingHorizontal: theme.spacing.large,
-    paddingVertical: theme.spacing.extraLarge,
-  },
-  eyebrow: {
-    marginTop: theme.spacing.roomy,
-    ...theme.typography.eyebrow,
-    color: theme.colors.primary,
-  },
-  title: {
-    marginTop: theme.spacing.small,
-    ...theme.typography.hero,
-    color: theme.colors.text,
-    textAlign: "center",
-  },
-  subtitle: {
-    marginTop: theme.spacing.compact,
-    ...theme.typography.body,
-    color: theme.colors.muted,
-    textAlign: "center",
-  },
-  divider: {
-    height: theme.border.width,
-    width: theme.size.touch,
-    backgroundColor: theme.colors.border,
-    marginVertical: theme.spacing.large,
-  },
-  description: {
-    ...theme.typography.heading,
-    color: theme.colors.text,
-    textAlign: "center",
-  },
-  note: {
-    marginTop: 12,
-    ...theme.typography.body,
-    color: theme.colors.muted,
-    textAlign: "center",
-  },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    action: { alignSelf: "stretch", marginTop: theme.spacing.large },
+    screen: { flex: 1, backgroundColor: theme.colors.background },
+    content: {
+      flexGrow: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: theme.spacing.large,
+    },
+    card: {
+      width: "100%",
+      maxWidth: theme.size.welcome,
+      alignItems: "center",
+      backgroundColor: theme.colors.surface,
+      borderRadius: theme.radius.card,
+      borderWidth: theme.border.width,
+      borderColor: theme.colors.border,
+      paddingHorizontal: theme.spacing.large,
+      paddingVertical: theme.spacing.extraLarge,
+    },
+    eyebrow: {
+      marginTop: theme.spacing.roomy,
+      ...theme.typography.eyebrow,
+      color: theme.colors.primary,
+    },
+    title: {
+      marginTop: theme.spacing.small,
+      ...theme.typography.hero,
+      color: theme.colors.text,
+      textAlign: "center",
+    },
+    subtitle: {
+      marginTop: theme.spacing.compact,
+      ...theme.typography.body,
+      color: theme.colors.muted,
+      textAlign: "center",
+    },
+    divider: {
+      height: theme.border.width,
+      width: theme.size.touch,
+      backgroundColor: theme.colors.border,
+      marginVertical: theme.spacing.large,
+    },
+    description: {
+      ...theme.typography.heading,
+      color: theme.colors.text,
+      textAlign: "center",
+    },
+    note: {
+      marginTop: 12,
+      ...theme.typography.body,
+      color: theme.colors.muted,
+      textAlign: "center",
+    },
+  });

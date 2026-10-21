@@ -1,12 +1,140 @@
-import {test} from 'node:test';import assert from 'node:assert/strict';import {comparePeriods,comparisonWindows} from '../src/domain/analytics/comparisons';import {periodFor} from '../src/domain/calendar/periods';
-const r=(date:string,steps:number)=>({id:Number(date.replaceAll('-','')),date,steps,calories:steps,water:steps});
-test('A01 partial Monday week compares equal elapsed days',()=>{const w=comparisonWindows(periodFor('2026-10-21','weekly'),'weekly','2026-10-21');assert.deepEqual(w.current,{start:'2026-10-19',end:'2026-10-21'});assert.deepEqual(w.previous,{start:'2026-10-12',end:'2026-10-14'});});
-test('A02 completed week compares full previous Monday week across year boundary',()=>{const w=comparisonWindows(periodFor('2026-01-01','weekly'),'weekly','2026-10-21');assert.deepEqual(w.current,{start:'2025-12-29',end:'2026-01-04'});assert.deepEqual(w.previous,{start:'2025-12-22',end:'2025-12-28'});});
-test('A03 partial month compares same elapsed dates',()=>{const w=comparisonWindows(periodFor('2026-10-21','monthly'),'monthly','2026-10-21');assert.equal(w.current.end,'2026-10-21');assert.equal(w.previous.end,'2026-09-21');});
-test('A04 shorter prior month caps both partial windows without overflow',()=>{const w=comparisonWindows(periodFor('2024-03-30','monthly'),'monthly','2024-03-30');assert.equal(w.current.end,'2024-03-29');assert.equal(w.previous.end,'2024-02-29');assert.equal(w.clamped,true);});
-test('A05 completed different-length months retain complete periods',()=>{const w=comparisonWindows(periodFor('2026-03-10','monthly'),'monthly','2026-10-21');assert.equal(w.current.end,'2026-03-31');assert.equal(w.previous.end,'2026-02-28');});
-test('A06 January previous month crosses December correctly',()=>{const w=comparisonWindows(periodFor('2026-01-10','monthly'),'monthly','2026-01-10');assert.equal(w.previous.start,'2025-12-01');assert.equal(w.previous.end,'2025-12-10');});
-test('A07 changes, saved zero and coverage exclude absent days',()=>{const c=comparePeriods([r('2026-10-19',5000),r('2026-10-21',0),r('2026-10-12',4000)],'steps',periodFor('2026-10-21','weekly'),'weekly','2026-10-21');assert.equal(c.current.count,2);assert.equal(c.current.days,3);assert.equal(c.difference,1000);assert.equal(c.percentage,25);assert.equal(c.direction,'increase');});
-test('A08 decrease and unchanged have exact arithmetic',()=>{for(const [current,expected,percentage] of [[2000,'decrease',-50],[4000,'unchanged',0]] as const){const c=comparePeriods([r('2026-10-19',current),r('2026-10-12',4000)],'water',periodFor('2026-10-21','weekly'),'weekly','2026-10-21');assert.equal(c.direction,expected);assert.equal(c.percentage,percentage);}});
-test('A09 zero denominator and missing data never produce Infinity or NaN',()=>{for(const [current,previous] of [[1,0],[0,0],[0,1],[null,1],[1,null]] as const){const rows=[...(current===null?[]:[r('2026-10-19',current)]),...(previous===null?[]:[r('2026-10-12',previous)])];const c=comparePeriods(rows,'steps',periodFor('2026-10-21','weekly'),'weekly','2026-10-21');assert.ok(c.percentage===null||Number.isFinite(c.percentage));assert.equal(c.current.total,current);assert.equal(c.previous.total,previous);assert.equal(c.fromZero,current===1&&previous===0);}});
-test('A10 recalculation follows canonical record edits/deletions',()=>{const records=[r('2026-10-19',10),r('2026-10-12',10)];const calculate=()=>comparePeriods(records,'steps',periodFor('2026-10-21','weekly'),'weekly','2026-10-21');assert.equal(calculate().difference,0);records[0].steps=20;assert.equal(calculate().difference,10);records.shift();assert.equal(calculate().difference,null);});
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import {
+  comparePeriods,
+  comparisonWindows,
+} from "../src/domain/analytics/comparisons";
+import { periodFor } from "../src/domain/calendar/periods";
+const r = (date: string, steps: number) => ({
+  id: Number(date.replaceAll("-", "")),
+  date,
+  steps,
+  calories: steps,
+  water: steps,
+});
+test("A01 partial Monday week compares equal elapsed days", () => {
+  const w = comparisonWindows(
+    periodFor("2026-10-21", "weekly"),
+    "weekly",
+    "2026-10-21",
+  );
+  assert.deepEqual(w.current, { start: "2026-10-19", end: "2026-10-21" });
+  assert.deepEqual(w.previous, { start: "2026-10-12", end: "2026-10-14" });
+});
+test("A02 completed week compares full previous Monday week across year boundary", () => {
+  const w = comparisonWindows(
+    periodFor("2026-01-01", "weekly"),
+    "weekly",
+    "2026-10-21",
+  );
+  assert.deepEqual(w.current, { start: "2025-12-29", end: "2026-01-04" });
+  assert.deepEqual(w.previous, { start: "2025-12-22", end: "2025-12-28" });
+});
+test("A03 partial month compares same elapsed dates", () => {
+  const w = comparisonWindows(
+    periodFor("2026-10-21", "monthly"),
+    "monthly",
+    "2026-10-21",
+  );
+  assert.equal(w.current.end, "2026-10-21");
+  assert.equal(w.previous.end, "2026-09-21");
+});
+test("A04 shorter prior month caps both partial windows without overflow", () => {
+  const w = comparisonWindows(
+    periodFor("2024-03-30", "monthly"),
+    "monthly",
+    "2024-03-30",
+  );
+  assert.equal(w.current.end, "2024-03-29");
+  assert.equal(w.previous.end, "2024-02-29");
+  assert.equal(w.clamped, true);
+});
+test("A05 completed different-length months retain complete periods", () => {
+  const w = comparisonWindows(
+    periodFor("2026-03-10", "monthly"),
+    "monthly",
+    "2026-10-21",
+  );
+  assert.equal(w.current.end, "2026-03-31");
+  assert.equal(w.previous.end, "2026-02-28");
+});
+test("A06 January previous month crosses December correctly", () => {
+  const w = comparisonWindows(
+    periodFor("2026-01-10", "monthly"),
+    "monthly",
+    "2026-01-10",
+  );
+  assert.equal(w.previous.start, "2025-12-01");
+  assert.equal(w.previous.end, "2025-12-10");
+});
+test("A07 changes, saved zero and coverage exclude absent days", () => {
+  const c = comparePeriods(
+    [r("2026-10-19", 5000), r("2026-10-21", 0), r("2026-10-12", 4000)],
+    "steps",
+    periodFor("2026-10-21", "weekly"),
+    "weekly",
+    "2026-10-21",
+  );
+  assert.equal(c.current.count, 2);
+  assert.equal(c.current.days, 3);
+  assert.equal(c.difference, 1000);
+  assert.equal(c.percentage, 25);
+  assert.equal(c.direction, "increase");
+});
+test("A08 decrease and unchanged have exact arithmetic", () => {
+  for (const [current, expected, percentage] of [
+    [2000, "decrease", -50],
+    [4000, "unchanged", 0],
+  ] as const) {
+    const c = comparePeriods(
+      [r("2026-10-19", current), r("2026-10-12", 4000)],
+      "water",
+      periodFor("2026-10-21", "weekly"),
+      "weekly",
+      "2026-10-21",
+    );
+    assert.equal(c.direction, expected);
+    assert.equal(c.percentage, percentage);
+  }
+});
+test("A09 zero denominator and missing data never produce Infinity or NaN", () => {
+  for (const [current, previous] of [
+    [1, 0],
+    [0, 0],
+    [0, 1],
+    [null, 1],
+    [1, null],
+  ] as const) {
+    const rows = [
+      ...(current === null ? [] : [r("2026-10-19", current)]),
+      ...(previous === null ? [] : [r("2026-10-12", previous)]),
+    ];
+    const c = comparePeriods(
+      rows,
+      "steps",
+      periodFor("2026-10-21", "weekly"),
+      "weekly",
+      "2026-10-21",
+    );
+    assert.ok(c.percentage === null || Number.isFinite(c.percentage));
+    assert.equal(c.current.total, current);
+    assert.equal(c.previous.total, previous);
+    assert.equal(c.fromZero, current === 1 && previous === 0);
+  }
+});
+test("A10 recalculation follows canonical record edits/deletions", () => {
+  const records = [r("2026-10-19", 10), r("2026-10-12", 10)];
+  const calculate = () =>
+    comparePeriods(
+      records,
+      "steps",
+      periodFor("2026-10-21", "weekly"),
+      "weekly",
+      "2026-10-21",
+    );
+  assert.equal(calculate().difference, 0);
+  records[0].steps = 20;
+  assert.equal(calculate().difference, 10);
+  records.shift();
+  assert.equal(calculate().difference, null);
+});

@@ -19,27 +19,28 @@ export function HealthIcon() {
   );
 }
 
-const createStyles = (theme: Theme) => StyleSheet.create({
-  container: {
-    width: 88,
-    height: 88,
-    borderRadius: theme.radius.icon,
-    backgroundColor: theme.colors.primarySoft,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  horizontal: {
-    position: "absolute",
-    width: 40,
-    height: 12,
-    borderRadius: 4,
-    backgroundColor: theme.colors.primary,
-  },
-  vertical: {
-    position: "absolute",
-    width: 12,
-    height: 40,
-    borderRadius: 4,
-    backgroundColor: theme.colors.primary,
-  },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      width: 88,
+      height: 88,
+      borderRadius: theme.radius.icon,
+      backgroundColor: theme.colors.primarySoft,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    horizontal: {
+      position: "absolute",
+      width: 40,
+      height: 12,
+      borderRadius: 4,
+      backgroundColor: theme.colors.primary,
+    },
+    vertical: {
+      position: "absolute",
+      width: 12,
+      height: 40,
+      borderRadius: 4,
+      backgroundColor: theme.colors.primary,
+    },
+  });

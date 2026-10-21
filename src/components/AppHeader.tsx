@@ -39,19 +39,20 @@ export function AppHeader({
     </View>
   );
 }
-const createStyles = (theme: Theme) => StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: theme.spacing.compact,
-  },
-  title: { flex: 1, gap: theme.spacing.tiny },
-  back: {
-    minWidth: theme.size.touch,
-    minHeight: theme.size.touch,
-    borderRadius: theme.radius.small,
-    backgroundColor: theme.colors.primarySoft,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    header: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing.compact,
+    },
+    title: { flex: 1, gap: theme.spacing.tiny },
+    back: {
+      minWidth: theme.size.touch,
+      minHeight: theme.size.touch,
+      borderRadius: theme.radius.small,
+      backgroundColor: theme.colors.primarySoft,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+  });

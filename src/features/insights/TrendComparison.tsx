@@ -1,2 +1,90 @@
-import { useMemo } from 'react';import { AppCard } from '@/components/AppCard';import { AppText } from '@/components/AppText';import { comparePeriods } from '@/domain/analytics/comparisons';import type { HealthRecord } from '@/domain/models/HealthRecord';import type { Metric } from '@/domain/models/HealthGoals';import type { Period,PeriodMode } from '@/domain/calendar/periods';
-export function TrendComparison({records,metric,period,mode,today,unit}:{records:HealthRecord[];metric:Metric;period:Period;mode:PeriodMode;today:string;unit:string}){const c=useMemo(()=>comparePeriods(records,metric,period,mode,today),[records,metric,period,mode,today]);const number=(n:number|null)=>n===null?'Not recorded':n.toLocaleString(undefined,{maximumFractionDigits:1});return <AppCard><AppText variant="heading" accessibilityRole="header">Compared with previous {mode==='weekly'?'week':'month'}</AppText><AppText muted>{c.partial?'Equivalent elapsed calendar-day windows.':'Completed calendar periods.'}{c.clamped?' Both windows are capped to the shorter previous month.':''}</AppText><AppText>Current: {c.current.period.start} to {c.current.period.end}</AppText><AppText>Total: {number(c.current.total)}{c.current.total===null?'':' '+unit} · Coverage: {c.current.count}/{c.current.days} days recorded</AppText><AppText>Previous: {c.previous.period.start} to {c.previous.period.end}</AppText><AppText>Total: {number(c.previous.total)}{c.previous.total===null?'':' '+unit} · Coverage: {c.previous.count}/{c.previous.days} days recorded</AppText>{c.difference===null?<AppText>Insufficient comparison data: both windows need at least one saved record.</AppText>:<><AppText>Change: {c.difference>0?'+':''}{number(c.difference)} {unit} · {c.direction}</AppText><AppText>{c.fromZero?'Increase from zero; percentage unavailable.':c.percentage===null?'Both totals are zero; percentage change is not applicable.':'Percentage change: '+(c.percentage>0?'+':'')+number(c.percentage)+'%'}</AppText></>}<AppText variant="caption" muted>Totals include saved zero days, exclude missing days and do not estimate activity. Different recorded-day coverage can affect comparisons. Trends describe logged activity, not medical outcomes.</AppText></AppCard>}
+import { useMemo } from "react";
+import { AppCard } from "@/components/AppCard";
+import { AppText } from "@/components/AppText";
+import { comparePeriods } from "@/domain/analytics/comparisons";
+import type { HealthRecord } from "@/domain/models/HealthRecord";
+import type { Metric } from "@/domain/models/HealthGoals";
+import type { Period, PeriodMode } from "@/domain/calendar/periods";
+export function TrendComparison({
+  records,
+  metric,
+  period,
+  mode,
+  today,
+  unit,
+}: {
+  records: HealthRecord[];
+  metric: Metric;
+  period: Period;
+  mode: PeriodMode;
+  today: string;
+  unit: string;
+}) {
+  const c = useMemo(
+    () => comparePeriods(records, metric, period, mode, today),
+    [records, metric, period, mode, today],
+  );
+  const number = (n: number | null) =>
+    n === null
+      ? "Not recorded"
+      : n.toLocaleString(undefined, { maximumFractionDigits: 1 });
+  return (
+    <AppCard>
+      <AppText variant="heading" accessibilityRole="header">
+        Compared with previous {mode === "weekly" ? "week" : "month"}
+      </AppText>
+      <AppText muted>
+        {c.partial
+          ? "Equivalent elapsed calendar-day windows."
+          : "Completed calendar periods."}
+        {c.clamped
+          ? " Both windows are capped to the shorter previous month."
+          : ""}
+      </AppText>
+      <AppText>
+        Current: {c.current.period.start} to {c.current.period.end}
+      </AppText>
+      <AppText>
+        Total: {number(c.current.total)}
+        {c.current.total === null ? "" : " " + unit} · Coverage:{" "}
+        {c.current.count}/{c.current.days} days recorded
+      </AppText>
+      <AppText>
+        Previous: {c.previous.period.start} to {c.previous.period.end}
+      </AppText>
+      <AppText>
+        Total: {number(c.previous.total)}
+        {c.previous.total === null ? "" : " " + unit} · Coverage:{" "}
+        {c.previous.count}/{c.previous.days} days recorded
+      </AppText>
+      {c.difference === null ? (
+        <AppText>
+          Insufficient comparison data: both windows need at least one saved
+          record.
+        </AppText>
+      ) : (
+        <>
+          <AppText>
+            Change: {c.difference > 0 ? "+" : ""}
+            {number(c.difference)} {unit} · {c.direction}
+          </AppText>
+          <AppText>
+            {c.fromZero
+              ? "Increase from zero; percentage unavailable."
+              : c.percentage === null
+                ? "Both totals are zero; percentage change is not applicable."
+                : "Percentage change: " +
+                  (c.percentage > 0 ? "+" : "") +
+                  number(c.percentage) +
+                  "%"}
+          </AppText>
+        </>
+      )}
+      <AppText variant="caption" muted>
+        Totals include saved zero days, exclude missing days and do not estimate
+        activity. Different recorded-day coverage can affect comparisons. Trends
+        describe logged activity, not medical outcomes.
+      </AppText>
+    </AppCard>
+  );
+}

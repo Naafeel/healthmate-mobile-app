@@ -13,7 +13,9 @@ export function EditRecordScreen() {
   if (number === null)
     return (
       <AppScreen tab={false}>
-        <AppText accessibilityRole="alert">This record link is invalid.</AppText>
+        <AppText accessibilityRole="alert">
+          This record link is invalid.
+        </AppText>
         <AppButton
           label="Return to Records"
           onPress={() => router.replace("/(tabs)/records")}

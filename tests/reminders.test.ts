@@ -1,9 +1,114 @@
-import {test} from 'node:test';import assert from 'node:assert/strict';
-import {reconcileReminder,reminderId,type ReminderPort,type ScheduledReminder} from '../src/domain/reminders/reconcileReminder';import {defaultPreferences} from '../src/domain/preferences/preferences';
-function setup(granted=true){let rows:ScheduledReminder[]=[];let schedules=0,requests=0;const port:ReminderPort={permission:async request=>{requests+=Number(request);return granted;},list:async()=>rows,cancel:async id=>{rows=rows.filter(n=>n.id!==id);},schedule:async(hour,minute,zone)=>{schedules++;rows.push({id:reminderId,hour,minute,zone});}};return{port,get rows(){return rows;},get schedules(){return schedules;},get requests(){return requests;},seed:(r:ScheduledReminder[])=>{rows=r;}};}
-test('N01 disabled default does not request permission or schedule',async()=>{const a=setup();await reconcileReminder(defaultPreferences,a.port,'Colombo');assert.equal(a.schedules,0);assert.equal(a.requests,0);});
-test('N02 opt in, repeated reconciliation and restart avoid duplicates',async()=>{const a=setup(),p={...defaultPreferences,reminderEnabled:true};await reconcileReminder(p,a.port,'Colombo',true);await reconcileReminder(p,a.port,'Colombo');assert.equal(a.schedules,1);assert.equal(a.requests,1);assert.equal(a.rows.length,1);});
-test('N03 time or timezone changes reschedule one own reminder',async()=>{const a=setup(),p={...defaultPreferences,reminderEnabled:true};await reconcileReminder(p,a.port,'Colombo');await reconcileReminder({...p,reminderHour:9,reminderMinute:15},a.port,'Colombo');await reconcileReminder({...p,reminderHour:9,reminderMinute:15},a.port,'New York');assert.equal(a.rows.length,1);assert.equal(a.schedules,3);assert.equal(a.rows[0].hour,9);});
-test('N04 disabling removes only HealthMate reminder',async()=>{const a=setup();a.seed([{id:reminderId,hour:20,minute:0,zone:'Colombo'},{id:'unrelated',hour:1,minute:2,zone:'Colombo'}]);await reconcileReminder(defaultPreferences,a.port,'Colombo');assert.deepEqual(a.rows.map(n=>n.id),['unrelated']);});
-test('N05 denied permission preserves desired preferences without claiming delivery',async()=>{const a=setup(false),p={...defaultPreferences,reminderEnabled:true};const text=await reconcileReminder(p,a.port,'Colombo',true);assert.match(text,/permission/);assert.equal(a.schedules,0);assert.equal(p.reminderEnabled,true);});
-test('N06 scheduling failure surfaces; retry can recover',async()=>{const a=setup(),p={...defaultPreferences,reminderEnabled:true};await assert.rejects(()=>reconcileReminder(p,{...a.port,schedule:async()=>{throw Error('native failure');}},'Colombo'));await reconcileReminder(p,a.port,'Colombo');assert.equal(a.rows.length,1);});
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import {
+  reconcileReminder,
+  reminderId,
+  type ReminderPort,
+  type ScheduledReminder,
+} from "../src/domain/reminders/reconcileReminder";
+import { defaultPreferences } from "../src/domain/preferences/preferences";
+function setup(granted = true) {
+  let rows: ScheduledReminder[] = [];
+  let schedules = 0,
+    requests = 0;
+  const port: ReminderPort = {
+    permission: async (request) => {
+      requests += Number(request);
+      return granted;
+    },
+    list: async () => rows,
+    cancel: async (id) => {
+      rows = rows.filter((n) => n.id !== id);
+    },
+    schedule: async (hour, minute, zone) => {
+      schedules++;
+      rows.push({ id: reminderId, hour, minute, zone });
+    },
+  };
+  return {
+    port,
+    get rows() {
+      return rows;
+    },
+    get schedules() {
+      return schedules;
+    },
+    get requests() {
+      return requests;
+    },
+    seed: (r: ScheduledReminder[]) => {
+      rows = r;
+    },
+  };
+}
+test("N01 disabled default does not request permission or schedule", async () => {
+  const a = setup();
+  await reconcileReminder(defaultPreferences, a.port, "Colombo");
+  assert.equal(a.schedules, 0);
+  assert.equal(a.requests, 0);
+});
+test("N02 opt in, repeated reconciliation and restart avoid duplicates", async () => {
+  const a = setup(),
+    p = { ...defaultPreferences, reminderEnabled: true };
+  await reconcileReminder(p, a.port, "Colombo", true);
+  await reconcileReminder(p, a.port, "Colombo");
+  assert.equal(a.schedules, 1);
+  assert.equal(a.requests, 1);
+  assert.equal(a.rows.length, 1);
+});
+test("N03 time or timezone changes reschedule one own reminder", async () => {
+  const a = setup(),
+    p = { ...defaultPreferences, reminderEnabled: true };
+  await reconcileReminder(p, a.port, "Colombo");
+  await reconcileReminder(
+    { ...p, reminderHour: 9, reminderMinute: 15 },
+    a.port,
+    "Colombo",
+  );
+  await reconcileReminder(
+    { ...p, reminderHour: 9, reminderMinute: 15 },
+    a.port,
+    "New York",
+  );
+  assert.equal(a.rows.length, 1);
+  assert.equal(a.schedules, 3);
+  assert.equal(a.rows[0].hour, 9);
+});
+test("N04 disabling removes only HealthMate reminder", async () => {
+  const a = setup();
+  a.seed([
+    { id: reminderId, hour: 20, minute: 0, zone: "Colombo" },
+    { id: "unrelated", hour: 1, minute: 2, zone: "Colombo" },
+  ]);
+  await reconcileReminder(defaultPreferences, a.port, "Colombo");
+  assert.deepEqual(
+    a.rows.map((n) => n.id),
+    ["unrelated"],
+  );
+});
+test("N05 denied permission preserves desired preferences without claiming delivery", async () => {
+  const a = setup(false),
+    p = { ...defaultPreferences, reminderEnabled: true };
+  const text = await reconcileReminder(p, a.port, "Colombo", true);
+  assert.match(text, /permission/);
+  assert.equal(a.schedules, 0);
+  assert.equal(p.reminderEnabled, true);
+});
+test("N06 scheduling failure surfaces; retry can recover", async () => {
+  const a = setup(),
+    p = { ...defaultPreferences, reminderEnabled: true };
+  await assert.rejects(() =>
+    reconcileReminder(
+      p,
+      {
+        ...a.port,
+        schedule: async () => {
+          throw Error("native failure");
+        },
+      },
+      "Colombo",
+    ),
+  );
+  await reconcileReminder(p, a.port, "Colombo");
+  assert.equal(a.rows.length, 1);
+});

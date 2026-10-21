@@ -1,4 +1,86 @@
-import type { HealthRecord } from '../models/HealthRecord';import type { Metric } from '../models/HealthGoals';import { adjacentPeriod,type Period,type PeriodMode } from '../calendar/periods';import { calendarDate,localDate } from '../records/validation';
-function days(p:Period){const result:string[]=[];const d=calendarDate(p.start);while(localDate(d)<=p.end){result.push(localDate(d));d.setDate(d.getDate()+1);}return result;}
-export function comparisonWindows(period:Period,mode:PeriodMode,today:string){const previous=adjacentPeriod(period,mode,-1,today);const currentDays=days(period),previousDays=days(previous);const partial=period.start<=today&&today<period.end;const elapsed=currentDays.filter(d=>d<=today).length;const count=partial?Math.min(elapsed,previousDays.length):0;return {current:partial?{start:period.start,end:currentDays[count-1]}:period,previous:partial?{start:previous.start,end:previousDays[count-1]}:previous,partial,clamped:partial&&count<elapsed};}
-export function comparePeriods(records:HealthRecord[],metric:Metric,period:Period,mode:PeriodMode,today:string){const windows=comparisonWindows(period,mode,today);function summary(p:Period){const rows=records.filter(r=>r.date>=p.start&&r.date<=p.end&&r.date<=today);return {count:rows.length,days:days(p).length,total:rows.length?rows.reduce((n,r)=>n+r[metric],0):null};}const current=summary(windows.current),previous=summary(windows.previous);const difference=current.total===null||previous.total===null?null:current.total-previous.total;const percentage=difference===null||previous.total===0?null:difference/previous.total!*100;const direction=difference===null?'unavailable':difference>0?'increase':difference<0?'decrease':'unchanged';return {...windows,current:{...current,period:windows.current},previous:{...previous,period:windows.previous},difference,percentage,direction,fromZero:previous.total===0&&current.total!==null&&current.total>0};}
+import type { HealthRecord } from "../models/HealthRecord";
+import type { Metric } from "../models/HealthGoals";
+import {
+  adjacentPeriod,
+  type Period,
+  type PeriodMode,
+} from "../calendar/periods";
+import { calendarDate, localDate } from "../records/validation";
+function days(p: Period) {
+  const result: string[] = [];
+  const d = calendarDate(p.start);
+  while (localDate(d) <= p.end) {
+    result.push(localDate(d));
+    d.setDate(d.getDate() + 1);
+  }
+  return result;
+}
+export function comparisonWindows(
+  period: Period,
+  mode: PeriodMode,
+  today: string,
+) {
+  const previous = adjacentPeriod(period, mode, -1, today);
+  const currentDays = days(period),
+    previousDays = days(previous);
+  const partial = period.start <= today && today < period.end;
+  const elapsed = currentDays.filter((d) => d <= today).length;
+  const count = partial ? Math.min(elapsed, previousDays.length) : 0;
+  return {
+    current: partial
+      ? { start: period.start, end: currentDays[count - 1] }
+      : period,
+    previous: partial
+      ? { start: previous.start, end: previousDays[count - 1] }
+      : previous,
+    partial,
+    clamped: partial && count < elapsed,
+  };
+}
+export function comparePeriods(
+  records: HealthRecord[],
+  metric: Metric,
+  period: Period,
+  mode: PeriodMode,
+  today: string,
+) {
+  const windows = comparisonWindows(period, mode, today);
+  function summary(p: Period) {
+    const rows = records.filter(
+      (r) => r.date >= p.start && r.date <= p.end && r.date <= today,
+    );
+    return {
+      count: rows.length,
+      days: days(p).length,
+      total: rows.length ? rows.reduce((n, r) => n + r[metric], 0) : null,
+    };
+  }
+  const current = summary(windows.current),
+    previous = summary(windows.previous);
+  const difference =
+    current.total === null || previous.total === null
+      ? null
+      : current.total - previous.total;
+  const percentage =
+    difference === null || previous.total === 0
+      ? null
+      : (difference / previous.total!) * 100;
+  const direction =
+    difference === null
+      ? "unavailable"
+      : difference > 0
+        ? "increase"
+        : difference < 0
+          ? "decrease"
+          : "unchanged";
+  return {
+    ...windows,
+    current: { ...current, period: windows.current },
+    previous: { ...previous, period: windows.previous },
+    difference,
+    percentage,
+    direction,
+    fromZero:
+      previous.total === 0 && current.total !== null && current.total > 0,
+  };
+}

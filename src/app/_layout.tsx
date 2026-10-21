@@ -14,11 +14,23 @@ import { useTheme } from "@/theme/useTheme";
 export const unstable_settings = { anchor: "index" };
 export default function RootLayout() {
   const theme = useTheme();
-  const reminderPreferences = usePreferences(s=>s.preferences);
-  const preferencesLoaded = usePreferences(s=>s.loaded);
-  useEffect(()=>{ if(!preferencesLoaded)return;const sync=()=>{void syncReminder().catch(()=>undefined);};sync();const sub=AppState.addEventListener("change",s=>{if(s==="active")sync();});return()=>sub.remove(); },[reminderPreferences,preferencesLoaded]);
-  const mode = usePreferences(s=>s.preferences.theme);
-  useEffect(()=>{ Appearance.setColorScheme(mode === "system" ? "unspecified" : mode); },[mode]);
+  const reminderPreferences = usePreferences((s) => s.preferences);
+  const preferencesLoaded = usePreferences((s) => s.loaded);
+  useEffect(() => {
+    if (!preferencesLoaded) return;
+    const sync = () => {
+      void syncReminder().catch(() => undefined);
+    };
+    sync();
+    const sub = AppState.addEventListener("change", (s) => {
+      if (s === "active") sync();
+    });
+    return () => sub.remove();
+  }, [reminderPreferences, preferencesLoaded]);
+  const mode = usePreferences((s) => s.preferences.theme);
+  useEffect(() => {
+    Appearance.setColorScheme(mode === "system" ? "unspecified" : mode);
+  }, [mode]);
   useEffect(() => {
     void usePreferences.getState().refresh();
     void healthRecordStore.getState().refresh();
@@ -32,7 +44,9 @@ export default function RootLayout() {
   }, []);
   return (
     <SafeAreaProvider>
-      <StatusBar style={theme.colors.background === "#101C19" ? "light" : "dark"} />
+      <StatusBar
+        style={theme.colors.background === "#101C19" ? "light" : "dark"}
+      />
       <Stack
         screenOptions={{
           headerShown: false,

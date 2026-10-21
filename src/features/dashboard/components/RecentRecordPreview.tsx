@@ -31,12 +31,13 @@ export function RecentRecordPreview({
     </AppCard>
   );
 }
-const createStyles = (theme: Theme) => StyleSheet.create({
-  card: { padding: theme.spacing.medium },
-  date: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: theme.spacing.small,
-  },
-  dateText: { flex: 1 },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    card: { padding: theme.spacing.medium },
+    date: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing.small,
+    },
+    dateText: { flex: 1 },
+  });

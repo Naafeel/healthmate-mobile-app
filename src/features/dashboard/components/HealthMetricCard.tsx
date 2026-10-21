@@ -63,19 +63,20 @@ export function HealthMetricCard({
     </AppCard>
   );
 }
-const createStyles = (theme: Theme) => StyleSheet.create({
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: theme.spacing.medium,
-    padding: theme.spacing.medium,
-  },
-  icon: {
-    width: theme.size.touch,
-    height: theme.size.touch,
-    borderRadius: theme.radius.small,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  copy: { flex: 1, gap: theme.spacing.tiny },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    card: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: theme.spacing.medium,
+      padding: theme.spacing.medium,
+    },
+    icon: {
+      width: theme.size.touch,
+      height: theme.size.touch,
+      borderRadius: theme.radius.small,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    copy: { flex: 1, gap: theme.spacing.tiny },
+  });

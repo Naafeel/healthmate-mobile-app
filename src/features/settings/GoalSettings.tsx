@@ -71,7 +71,10 @@ export function GoalSettings() {
               error={errors[key]}
               disabled={saving || loading}
               onChange={(value) => {
-                setDraft((previous) => ({ ...(previous ?? fields), [key]: value }));
+                setDraft((previous) => ({
+                  ...(previous ?? fields),
+                  [key]: value,
+                }));
                 setErrors((e) => ({ ...e, [key]: undefined }));
                 healthGoalStore.getState().clearFeedback();
               }}
@@ -81,7 +84,10 @@ export function GoalSettings() {
               variant="secondary"
               disabled={saving || loading || !fields[key]}
               onPress={() => {
-                setDraft((previous) => ({ ...(previous ?? fields), [key]: "" }));
+                setDraft((previous) => ({
+                  ...(previous ?? fields),
+                  [key]: "",
+                }));
                 setErrors((e) => ({ ...e, [key]: undefined }));
                 healthGoalStore.getState().clearFeedback();
               }}

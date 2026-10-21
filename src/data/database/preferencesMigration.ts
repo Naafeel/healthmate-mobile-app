@@ -1,5 +1,5 @@
-import type { DatabaseConnection } from './connection';
-import { migrateDatabase } from './migrations';
+import type { DatabaseConnection } from "./connection";
+import { migrateDatabase } from "./migrations";
 export const currentSchemaVersion = 3;
 export const preferencesSQL = `CREATE TABLE IF NOT EXISTS app_preferences (
  id INTEGER PRIMARY KEY CHECK(id=1),
@@ -10,8 +10,21 @@ export const preferencesSQL = `CREATE TABLE IF NOT EXISTS app_preferences (
 );`;
 /** Preserve the original v1/v2 migrations verbatim; add v3 without seeding health data. */
 export async function initializeDatabase(db: DatabaseConnection) {
- const version=(await db.getFirstAsync<{user_version:number}>('PRAGMA user_version'))?.user_version ?? 0;
- if(version>currentSchemaVersion) throw new Error('This database needs a newer HealthMate version.');
- if(version<=2) await migrateDatabase(db);
- if(version<3){await db.execAsync('BEGIN IMMEDIATE');try{await db.execAsync(preferencesSQL);await db.execAsync('PRAGMA user_version=3; COMMIT;');}catch(e){await db.execAsync('ROLLBACK');throw e;}}
+  await db.execAsync("PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000;");
+  const version =
+    (await db.getFirstAsync<{ user_version: number }>("PRAGMA user_version"))
+      ?.user_version ?? 0;
+  if (version > currentSchemaVersion)
+    throw new Error("This database needs a newer HealthMate version.");
+  if (version <= 2) await migrateDatabase(db);
+  if (version < 3) {
+    await db.execAsync("BEGIN IMMEDIATE");
+    try {
+      await db.execAsync(preferencesSQL);
+      await db.execAsync("PRAGMA user_version=3; COMMIT;");
+    } catch (e) {
+      await db.execAsync("ROLLBACK");
+      throw e;
+    }
+  }
 }

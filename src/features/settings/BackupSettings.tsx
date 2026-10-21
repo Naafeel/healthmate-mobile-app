@@ -1,4 +1,160 @@
-import { useRef,useState } from 'react';import { Alert } from 'react-native';import { AppCard } from '@/components/AppCard';import { AppText } from '@/components/AppText';import { AppButton } from '@/components/AppButton';import type { HealthBackup } from '@/domain/backup/backup';import { shareBackup,pickBackup,restoreBackup } from '@/data/backup/nativeBackup';
-export function BackupSettings(){const [busy,setBusy]=useState(false),[preview,setPreview]=useState<HealthBackup|null>(null),[message,setMessage]=useState('');const lock=useRef(false),file=useRef<{remove():void}|null>(null);
- async function run(work:()=>Promise<void>){if(lock.current)return;lock.current=true;setBusy(true);setMessage('');try{await work();}catch(e){setMessage(e instanceof Error?e.message:'Data management failed. Please retry.');}finally{lock.current=false;setBusy(false);}}
- return <AppCard><AppText variant="heading" accessibilityRole="header">Backup & Restore</AppText><AppText muted>Protect records, goals, appearance and reminder preferences with a versioned JSON file. It is not encrypted: anyone with the file can read your health information. Choose a private location.</AppText><AppButton label="Backup HealthMate Data" disabled={busy} onPress={()=>Alert.alert('Create a private backup?','Includes all saved health records, goals and preferences. This readable JSON file contains personal health information. Choose where to save or share it.',[{text:'Cancel',style:'cancel'},{text:'Create backup',onPress:()=>void run(async()=>{file.current?.remove();file.current=await shareBackup();setMessage('Backup sharing closed. HealthMate cannot confirm a recipient saved it.');})}])}/><AppButton label="Restore HealthMate Data" variant="secondary" disabled={busy} onPress={()=>void run(async()=>{const backup=await pickBackup();if(backup)setPreview(backup);else setMessage('File selection cancelled. No data changed.');})}/>{preview&&<><AppText variant="heading">Restore preview</AppText><AppText>Records: {preview.records.length}</AppText><AppText>Dates: {preview.records[0]?.date??'None'} to {preview.records.at(-1)?.date??'None'}</AppText><AppText>Goals: {Object.values(preview.goals).some(v=>v!==null)?'Configured':'All unset'}</AppText><AppText>Appearance: {preview.preferences.theme}</AppText><AppText>Reminder: {preview.preferences.reminderEnabled?'Enabled preference':'Off'} at {String(preview.preferences.reminderHour).padStart(2,'0')}:{String(preview.preferences.reminderMinute).padStart(2,'0')}</AppText><AppText>Created: {preview.exportedAt}</AppText><AppText muted>Restoring replaces all current HealthMate records, goals and preferences. Android notification permission is not transferred.</AppText><AppButton label="Confirm Restore" disabled={busy} onPress={()=>Alert.alert('Replace current HealthMate data?','Your current records and settings will be replaced by this validated backup.',[{text:'Cancel',style:'cancel'},{text:'Restore',style:'destructive',onPress:()=>void run(async()=>{setMessage(await restoreBackup(preview));setPreview(null);})}])}/><AppButton label="Cancel restore" variant="secondary" disabled={busy} onPress={()=>{setPreview(null);setMessage('Restore cancelled. No data changed.');}}/></>}{message&&<AppText accessibilityRole="alert" accessibilityLiveRegion="polite">{message}</AppText>}<AppButton label="Remove temporary backup file" variant="secondary" disabled={busy} onPress={()=>{file.current?.remove();file.current=null;setMessage('Temporary app-cache backup removed, if present. Copies saved elsewhere are yours to manage.');}}/></AppCard>}
+import { useRef, useState } from "react";
+import { Alert } from "react-native";
+import { AppCard } from "@/components/AppCard";
+import { AppText } from "@/components/AppText";
+import { AppButton } from "@/components/AppButton";
+import type { HealthBackup } from "@/domain/backup/backup";
+import {
+  shareBackup,
+  pickBackup,
+  restoreBackup,
+} from "@/data/backup/nativeBackup";
+export function BackupSettings() {
+  const [busy, setBusy] = useState(false),
+    [preview, setPreview] = useState<HealthBackup | null>(null),
+    [message, setMessage] = useState("");
+  const lock = useRef(false),
+    file = useRef<{ remove(): void } | null>(null);
+  async function run(work: () => Promise<void>) {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setMessage("");
+    try {
+      await work();
+    } catch (e) {
+      setMessage(
+        e instanceof Error
+          ? e.message
+          : "Data management failed. Please retry.",
+      );
+    } finally {
+      lock.current = false;
+      setBusy(false);
+    }
+  }
+  return (
+    <AppCard>
+      <AppText variant="heading" accessibilityRole="header">
+        Backup & Restore
+      </AppText>
+      <AppText muted>
+        Protect records, goals, appearance and reminder preferences with a
+        versioned JSON file. It is not encrypted: anyone with the file can read
+        your health information. Choose a private location.
+      </AppText>
+      <AppButton
+        label="Backup HealthMate Data"
+        disabled={busy}
+        onPress={() =>
+          Alert.alert(
+            "Create a private backup?",
+            "Includes all saved health records, goals and preferences. This readable JSON file contains personal health information. Choose where to save or share it.",
+            [
+              { text: "Cancel", style: "cancel" },
+              {
+                text: "Create backup",
+                onPress: () =>
+                  void run(async () => {
+                    file.current?.remove();
+                    file.current = await shareBackup();
+                    setMessage(
+                      "Backup sharing closed. HealthMate cannot confirm a recipient saved it.",
+                    );
+                  }),
+              },
+            ],
+          )
+        }
+      />
+      <AppButton
+        label="Restore HealthMate Data"
+        variant="secondary"
+        disabled={busy}
+        onPress={() =>
+          void run(async () => {
+            const backup = await pickBackup();
+            if (backup) setPreview(backup);
+            else setMessage("File selection cancelled. No data changed.");
+          })
+        }
+      />
+      {preview && (
+        <>
+          <AppText variant="heading">Restore preview</AppText>
+          <AppText>Records: {preview.records.length}</AppText>
+          <AppText>
+            Dates: {preview.records[0]?.date ?? "None"} to{" "}
+            {preview.records.at(-1)?.date ?? "None"}
+          </AppText>
+          <AppText>
+            Goals:{" "}
+            {Object.values(preview.goals).some((v) => v !== null)
+              ? "Configured"
+              : "All unset"}
+          </AppText>
+          <AppText>Appearance: {preview.preferences.theme}</AppText>
+          <AppText>
+            Reminder:{" "}
+            {preview.preferences.reminderEnabled ? "Enabled preference" : "Off"}{" "}
+            at {String(preview.preferences.reminderHour).padStart(2, "0")}:
+            {String(preview.preferences.reminderMinute).padStart(2, "0")}
+          </AppText>
+          <AppText>Created: {preview.exportedAt}</AppText>
+          <AppText muted>
+            Restoring replaces all current HealthMate records, goals and
+            preferences. Android notification permission is not transferred.
+          </AppText>
+          <AppButton
+            label="Confirm Restore"
+            disabled={busy}
+            onPress={() =>
+              Alert.alert(
+                "Replace current HealthMate data?",
+                "Your current records and settings will be replaced by this validated backup.",
+                [
+                  { text: "Cancel", style: "cancel" },
+                  {
+                    text: "Restore",
+                    style: "destructive",
+                    onPress: () =>
+                      void run(async () => {
+                        setMessage(await restoreBackup(preview));
+                        setPreview(null);
+                      }),
+                  },
+                ],
+              )
+            }
+          />
+          <AppButton
+            label="Cancel restore"
+            variant="secondary"
+            disabled={busy}
+            onPress={() => {
+              setPreview(null);
+              setMessage("Restore cancelled. No data changed.");
+            }}
+          />
+        </>
+      )}
+      {message && (
+        <AppText accessibilityRole="alert" accessibilityLiveRegion="polite">
+          {message}
+        </AppText>
+      )}
+      <AppButton
+        label="Remove temporary backup file"
+        variant="secondary"
+        disabled={busy}
+        onPress={() => {
+          file.current?.remove();
+          file.current = null;
+          setMessage(
+            "Temporary app-cache backup removed, if present. Copies saved elsewhere are yours to manage.",
+          );
+        }}
+      />
+    </AppCard>
+  );
+}

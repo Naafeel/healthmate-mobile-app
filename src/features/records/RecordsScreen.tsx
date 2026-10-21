@@ -209,14 +209,15 @@ export function RecordsScreen() {
     </SafeAreaView>
   );
 }
-const createStyles = (theme: Theme) => StyleSheet.create({
-  screen: { flex: 1, backgroundColor: theme.colors.background },
-  content: {
-    padding: theme.spacing.large,
-    maxWidth: theme.size.content,
-    width: "100%",
-    alignSelf: "center",
-    paddingBottom: theme.spacing.roomy,
-  },
-  header: { gap: theme.spacing.large, marginBottom: theme.spacing.large },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    screen: { flex: 1, backgroundColor: theme.colors.background },
+    content: {
+      padding: theme.spacing.large,
+      maxWidth: theme.size.content,
+      width: "100%",
+      alignSelf: "center",
+      paddingBottom: theme.spacing.roomy,
+    },
+    header: { gap: theme.spacing.large, marginBottom: theme.spacing.large },
+  });

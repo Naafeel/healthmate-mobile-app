@@ -199,4 +199,5 @@ export function DashboardScreen() {
     </AppScreen>
   );
 }
-const createStyles = (theme: Theme) => StyleSheet.create({ section: { gap: theme.spacing.compact } });
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({ section: { gap: theme.spacing.compact } });

@@ -54,17 +54,18 @@ export function MeasurementField({
     </View>
   );
 }
-const createStyles = (theme: Theme) => StyleSheet.create({
-  field: { gap: theme.spacing.small },
-  input: {
-    ...theme.typography.body,
-    minHeight: theme.size.button,
-    borderWidth: theme.border.width,
-    borderColor: theme.colors.border,
-    borderRadius: theme.radius.small,
-    padding: theme.spacing.medium,
-    color: theme.colors.text,
-    backgroundColor: theme.colors.surface,
-  },
-  error: { color: theme.colors.error },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    field: { gap: theme.spacing.small },
+    input: {
+      ...theme.typography.body,
+      minHeight: theme.size.button,
+      borderWidth: theme.border.width,
+      borderColor: theme.colors.border,
+      borderRadius: theme.radius.small,
+      padding: theme.spacing.medium,
+      color: theme.colors.text,
+      backgroundColor: theme.colors.surface,
+    },
+    error: { color: theme.colors.error },
+  });

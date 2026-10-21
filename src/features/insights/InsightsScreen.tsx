@@ -163,7 +163,14 @@ export function InsightsScreen() {
               highest-value tie.
             </AppText>
           </AppCard>
-          <TrendComparison records={state.records} metric={metric} period={period} mode={mode} today={state.today} unit={selected.unit} />
+          <TrendComparison
+            records={state.records}
+            metric={metric}
+            period={period}
+            mode={mode}
+            today={state.today}
+            unit={selected.unit}
+          />
           <ActivityChart
             key={`${mode}:${period.start}:${metric}`}
             days={result.data.days}

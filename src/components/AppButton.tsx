@@ -16,8 +16,8 @@ export function AppButton({
   disabled: disabledProp,
   ...props
 }: Props) {
-  const maintenance=useDataMaintenance(s=>s.busy);
-  const disabled=disabledProp||maintenance;
+  const maintenance = useDataMaintenance((s) => s.busy);
+  const disabled = disabledProp || maintenance;
   const theme = useTheme();
   const styles = createStyles(theme);
   const primary = variant === "primary";
@@ -58,17 +58,18 @@ export function AppButton({
     </Pressable>
   );
 }
-const createStyles = (theme: Theme) => StyleSheet.create({
-  button: {
-    minHeight: theme.size.button,
-    borderRadius: theme.radius.button,
-    padding: theme.spacing.medium,
-    justifyContent: "center",
-  },
-  content: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: theme.spacing.small,
-  },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    button: {
+      minHeight: theme.size.button,
+      borderRadius: theme.radius.button,
+      padding: theme.spacing.medium,
+      justifyContent: "center",
+    },
+    content: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: theme.spacing.small,
+    },
+  });

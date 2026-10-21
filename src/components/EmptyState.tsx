@@ -29,16 +29,17 @@ export function EmptyState({
     </AppCard>
   );
 }
-const createStyles = (theme: Theme) => StyleSheet.create({
-  card: { alignItems: "center", paddingVertical: theme.spacing.roomy },
-  icon: {
-    width: theme.size.iconTile,
-    height: theme.size.iconTile,
-    borderRadius: theme.radius.icon,
-    backgroundColor: theme.colors.primarySoft,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: theme.spacing.small,
-  },
-  text: { textAlign: "center" },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    card: { alignItems: "center", paddingVertical: theme.spacing.roomy },
+    icon: {
+      width: theme.size.iconTile,
+      height: theme.size.iconTile,
+      borderRadius: theme.radius.icon,
+      backgroundColor: theme.colors.primarySoft,
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: theme.spacing.small,
+    },
+    text: { textAlign: "center" },
+  });
