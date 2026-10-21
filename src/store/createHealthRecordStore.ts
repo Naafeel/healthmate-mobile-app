@@ -37,6 +37,7 @@ export function createHealthRecordStore(
         records: sorted(records),
         hasLoaded: true,
         error: null,
+        waterError: null,
         success: null,
       });
     },
