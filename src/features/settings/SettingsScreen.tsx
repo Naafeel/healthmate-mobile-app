@@ -21,6 +21,11 @@ export function SettingsScreen() {
         variant="secondary"
         onPress={() => router.push("/achievements")}
       />
+      <AppButton
+        label="My Profile"
+        variant="secondary"
+        onPress={() => router.push("/profile")}
+      />
       <AppearanceSettings />
       <ReminderSettings />
       <GoalSettings key={revision} />

@@ -1,3 +1,5 @@
+import { usePersonalization } from "@/store/personalization";
+import { displayWater } from "@/domain/profile/profile";
 import { useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -20,6 +22,7 @@ import type { HealthRecord } from "@/domain/models/HealthRecord";
 import type { Theme } from "@/theme/tokens";
 import { useTheme } from "@/theme/useTheme";
 export function RecordsScreen() {
+  const waterUnit = usePersonalization((s) => s.profile.waterUnit);
   const theme = useTheme();
   const styles = createStyles(theme);
   const records = useHealthRecords((s) => s.records),
@@ -183,7 +186,9 @@ export function RecordsScreen() {
             <AppText>
               Calories burned: {item.calories.toLocaleString()} kcal
             </AppText>
-            <AppText>Water intake: {item.water.toLocaleString()} ml</AppText>
+            <AppText>
+              Water intake: {displayWater(item.water, waterUnit)}
+            </AppText>
             {!!item.note && <AppText>{item.note}</AppText>}
             {!!item.tags?.length && (
               <AppText muted>{item.tags.join(" � ")}</AppText>

@@ -1,3 +1,5 @@
+import { usePersonalization } from "@/store/personalization";
+import { displayWater } from "@/domain/profile/profile";
 import { View } from "react-native";
 import { AppText } from "@/components/AppText";
 import { goalProgress } from "@/domain/goals/progress";
@@ -14,6 +16,7 @@ export function GoalProgressBar({
   color: string;
 }) {
   const theme = useTheme();
+  const waterUnit = usePersonalization((s) => s.profile.waterUnit);
   const progress = goalProgress(actual, goal);
   if (progress.status !== "ready")
     return (
@@ -25,7 +28,10 @@ export function GoalProgressBar({
   return (
     <View style={{ gap: theme.spacing.tiny }}>
       <AppText variant="caption" muted>
-        Goal: {goal!.toLocaleString()} {unit}
+        Goal:{" "}
+        {unit === "ml"
+          ? displayWater(goal!, waterUnit)
+          : `${goal!.toLocaleString()} ${unit}`}
       </AppText>
       <View
         accessible

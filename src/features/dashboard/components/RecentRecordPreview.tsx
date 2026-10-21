@@ -1,3 +1,5 @@
+import { usePersonalization } from "@/store/personalization";
+import { displayWater } from "@/domain/profile/profile";
 import { StyleSheet, View } from "react-native";
 import { AppCard } from "@/components/AppCard";
 import { AppIcon } from "@/components/AppIcon";
@@ -13,6 +15,7 @@ export function RecentRecordPreview({
   record: HealthRecord;
   today: string;
 }) {
+  const waterUnit = usePersonalization((s) => s.profile.waterUnit);
   const theme = useTheme();
   const styles = createStyles(theme);
   return (
@@ -26,7 +29,7 @@ export function RecentRecordPreview({
       <AppText variant="caption" muted>
         {formatMeasurement(record.steps)} steps ·{" "}
         {formatMeasurement(record.calories)} kcal burned ·{" "}
-        {formatMeasurement(record.water)} ml water
+        {displayWater(record.water, waterUnit)} water
       </AppText>
     </AppCard>
   );

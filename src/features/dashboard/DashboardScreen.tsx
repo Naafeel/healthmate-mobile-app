@@ -1,3 +1,4 @@
+import { usePersonalization } from "@/store/personalization";
 import { QuickWater } from "./QuickWater";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { router } from "expo-router";
@@ -15,6 +16,7 @@ import { HealthMetricCard } from "./components/HealthMetricCard";
 import { RecentRecordPreview } from "./components/RecentRecordPreview";
 import { useHealthGoals } from "@/store/healthGoals";
 export function DashboardScreen() {
+  const profile = usePersonalization((s) => s.profile);
   const theme = useTheme();
   const styles = createStyles(theme);
   const { today, summary, retry, streaks } = useDashboard();
@@ -29,6 +31,9 @@ export function DashboardScreen() {
   return (
     <AppScreen>
       <AppHeader eyebrow="HEALTHMATE" title="A little care, every day" />
+      {!!profile.name && (
+        <AppText variant="heading">Hello, {profile.name}</AppText>
+      )}
       <AppText muted>{formatDashboardDate(today)}</AppText>
       <View style={styles.section}>
         <AppText variant="heading" accessibilityRole="header">

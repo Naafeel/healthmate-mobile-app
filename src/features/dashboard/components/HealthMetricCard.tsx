@@ -1,3 +1,5 @@
+import { usePersonalization } from "@/store/personalization";
+import { displayWater } from "@/domain/profile/profile";
 import { StyleSheet, View } from "react-native";
 import { AppCard } from "@/components/AppCard";
 import { AppIcon, type IconName } from "@/components/AppIcon";
@@ -27,7 +29,11 @@ export function HealthMetricCard({
   const theme = useTheme();
   const styles = createStyles(theme);
   const color = theme.metrics[tone];
-  const formatted = formatMeasurement(value);
+  const waterUnit = usePersonalization((s) => s.profile.waterUnit);
+  const formatted =
+    tone === "water"
+      ? displayWater(value, waterUnit)
+      : formatMeasurement(value) + " " + unit;
   return (
     <AppCard style={styles.card}>
       <View style={[styles.icon, { backgroundColor: color.background }]}>
@@ -38,14 +44,11 @@ export function HealthMetricCard({
           {label}
         </AppText>
         <AppText
-          accessibilityLabel={label + ": " + formatted + " " + unit}
+          accessibilityLabel={label + ": " + formatted}
           variant="title"
           style={{ color: color.foreground }}
         >
-          {formatted}{" "}
-          <AppText variant="body" muted>
-            {unit}
-          </AppText>
+          {formatted}
         </AppText>
         {goalsAvailable ? (
           <GoalProgressBar
