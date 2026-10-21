@@ -14,11 +14,17 @@ export function sqliteAdapter(file = ":memory:") {
         lastInsertRowId: Number(result.lastInsertRowid),
       };
     },
-    getFirstAsync: async <T>(sql: string, ...params: (string | number)[]) =>
+    getFirstAsync: async <T>(
+      sql: string,
+      ...params: (string | number | null)[]
+    ) =>
       ((row) => (row ? ({ ...row } as T) : null))(
         native.prepare(sql).get(...params),
       ),
-    getAllAsync: async <T>(sql: string, ...params: (string | number)[]) =>
+    getAllAsync: async <T>(
+      sql: string,
+      ...params: (string | number | null)[]
+    ) =>
       native
         .prepare(sql)
         .all(...params)

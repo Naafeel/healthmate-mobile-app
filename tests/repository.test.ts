@@ -129,9 +129,9 @@ test("DB07 migration idempotence and version safety preserve rows", async () => 
     assert.equal(
       (await db.getFirstAsync<{ user_version: number }>("PRAGMA user_version"))
         ?.user_version,
-      1,
+      2,
     );
-    await db.execAsync("PRAGMA user_version=2");
+    await db.execAsync("PRAGMA user_version=3");
     await assert.rejects(() => migrateDatabase(db));
     assert.deepEqual(await repo.getRecordById(a.id), a);
   } finally {

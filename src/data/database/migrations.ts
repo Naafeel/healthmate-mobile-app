@@ -1,5 +1,6 @@
 import type { DatabaseConnection } from "./connection";
-export const schemaVersion = 1;
+import { createHealthGoalsSQL } from "./goalsMigration";
+export const schemaVersion = 2;
 export const createHealthRecordsSQL = `CREATE TABLE IF NOT EXISTS health_records (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   date TEXT NOT NULL UNIQUE CHECK (
@@ -30,6 +31,10 @@ export async function migrateDatabase(db: DatabaseConnection): Promise<void> {
     if (version < 1) {
       await db.execAsync(createHealthRecordsSQL);
       await db.execAsync("PRAGMA user_version = 1;");
+    }
+    if (version < 2) {
+      await db.execAsync(createHealthGoalsSQL);
+      await db.execAsync("PRAGMA user_version = 2;");
     }
     await db.execAsync("COMMIT;");
   } catch (error) {
