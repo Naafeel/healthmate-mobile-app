@@ -1,3 +1,4 @@
+import { useDataMaintenance } from "./dataMaintenance";
 import type { WaterIncrementRepository } from "../domain/records/quickWater";
 import { createStore } from "zustand/vanilla";
 import type {
@@ -64,7 +65,7 @@ export function createHealthRecordStore(
       }
     },
     save: async (input, id) => {
-      if (get().mutating)
+      if (get().mutating || useDataMaintenance.getState().busy)
         throw new RecordError(
           "busy",
           "A record change is already being saved. Please wait.",
@@ -98,7 +99,7 @@ export function createHealthRecordStore(
       }
     },
     addWater: async (date, amount) => {
-      if (get().mutating) return false;
+      if (get().mutating || useDataMaintenance.getState().busy) return false;
       revision++;
       let changed = false;
       set({ mutating: true, waterError: null, success: null });
@@ -124,7 +125,7 @@ export function createHealthRecordStore(
       }
     },
     remove: async (id) => {
-      if (get().mutating) return false;
+      if (get().mutating || useDataMaintenance.getState().busy) return false;
       revision++;
       let changed = false;
       set({ mutating: true, error: null, success: null });

@@ -1,3 +1,4 @@
+import { useDataMaintenance } from "./dataMaintenance";
 import { createStore } from "zustand/vanilla";
 import type { GoalValues, HealthGoals } from "../domain/models/HealthGoals";
 import { emptyGoals } from "../domain/models/HealthGoals";
@@ -45,7 +46,7 @@ export function createHealthGoalStore(repository: HealthGoalRepository) {
       }
     },
     save: async (input) => {
-      if (get().saving) return false;
+      if (get().saving || useDataMaintenance.getState().busy) return false;
       revision++;
       set({ saving: true, error: null, success: null });
       try {

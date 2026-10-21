@@ -1,6 +1,5 @@
 import { router } from "expo-router";
 import { AppButton } from "@/components/AppButton";
-import { BackupSettings } from "./BackupSettings";
 import { useDataMaintenance } from "@/store/dataMaintenance";
 import { ReminderSettings } from "./ReminderSettings";
 import { AppearanceSettings } from "./AppearanceSettings";
@@ -9,7 +8,6 @@ import { AppHeader } from "@/components/AppHeader";
 import { AppText } from "@/components/AppText";
 import { AppCard } from "@/components/AppCard";
 import { GoalSettings } from "./GoalSettings";
-import { ExportRecordsCard } from "@/features/export/ExportRecordsCard";
 export function SettingsScreen() {
   const revision = useDataMaintenance((s) => s.revision);
   return (
@@ -34,8 +32,11 @@ export function SettingsScreen() {
       <AppearanceSettings />
       <ReminderSettings />
       <GoalSettings key={revision} />
-      <ExportRecordsCard />
-      <BackupSettings />
+      <AppButton
+        label="Privacy & Data Management"
+        variant="secondary"
+        onPress={() => router.push("/privacy")}
+      />
 
       <AppCard>
         <AppText variant="eyebrow" muted>

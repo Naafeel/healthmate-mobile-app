@@ -1,3 +1,4 @@
+import { useDataMaintenance } from "./dataMaintenance";
 import { create } from "zustand";
 import {
   defaultPreferences,
@@ -38,7 +39,8 @@ export const usePreferences = create<State>((set, get) => ({
     }
   },
   save: async (p) => {
-    if (get().busy || !get().loaded) return false;
+    if (get().busy || !get().loaded || useDataMaintenance.getState().busy)
+      return false;
     set({ busy: true, error: null });
     try {
       set({ preferences: await preferencesRepository.save(p) });
