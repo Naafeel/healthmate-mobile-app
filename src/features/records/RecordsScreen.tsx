@@ -1,6 +1,8 @@
+import { RecordSearch } from "./RecordSearch";
+import { emptyFilters, filterRecords } from "@/domain/records/search";
 import { usePersonalization } from "@/store/personalization";
 import { displayWater } from "@/domain/profile/profile";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -31,6 +33,7 @@ export function RecordsScreen() {
   const error = useHealthRecords((s) => s.error),
     success = useHealthRecords((s) => s.success);
   const [filter, setFilter] = useState("");
+  const [advanced, setAdvanced] = useState(emptyFilters);
   const dialogOpen = useRef(false);
   useFocusEffect(
     useCallback(() => {
@@ -77,9 +80,10 @@ export function RecordsScreen() {
       },
     );
   }
-  const visible = filter
-    ? records.filter((record) => record.date === filter)
-    : records;
+  const visible = useMemo(
+    () => filterRecords(records, advanced, filter),
+    [records, advanced, filter],
+  );
   return (
     <SafeAreaView style={styles.screen} edges={["top", "left", "right"]}>
       <FlatList
@@ -127,6 +131,17 @@ export function RecordsScreen() {
                 />
               )}
             </AppCard>
+            <RecordSearch
+              onApply={(f) => {
+                setAdvanced(f);
+                if (JSON.stringify(f) === JSON.stringify(emptyFilters()))
+                  setFilter("");
+              }}
+            />
+            <AppText accessibilityLiveRegion="polite">
+              {visible.length} matching saved{" "}
+              {visible.length === 1 ? "date" : "dates"}
+            </AppText>
             {loading && (
               <ActivityIndicator
                 accessibilityLabel="Loading records"
@@ -167,10 +182,12 @@ export function RecordsScreen() {
             <EmptyState
               icon="reader-outline"
               title={
-                filter ? "No record for this date" : "Your story starts here"
+                records.length
+                  ? "No matching records"
+                  : "Your story starts here"
               }
               description={
-                filter
+                records.length
                   ? "Choose another date or clear the filter to see all saved records."
                   : "Tap Add Record to save your first daily health summary. Zero measurements are welcome."
               }
